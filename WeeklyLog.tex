@@ -1,0 +1,223 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Weekly Log},
+  pdfauthor={Sushant},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Weekly Log}
+\author{Sushant}
+\date{2025-10-02}
+
+\begin{document}
+\maketitle
+
+\textbf{Week 1 Reading Notes:}\\
+\textbf{\emph{Book: Using Geochemical Data (Rollinson and Pease)}}\\
+1. Normalising values can be chosen from 2 sets:\\
+i) CI chondrites\\
+ii) Ordinary chrondrites (volatile free, tend to have higher values).\\
+Therefore, it is important to cite the right data set. See pg.130 for
+dataset.
+
+Shale normalisation is used for upper crust sediments while Chondrite
+normalisation will be used in our project since we want to compare
+igneous rocks to primitive solar system.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  REE in minerals in Igneous Rocks:\\
+  i)\textbf{Feldspars}: low concentration, but when in felsic rocks, Eu
+  anomaly is +ve\\
+  ii)\textbf{Olivine}: very low concentration, unlikely to fractionate
+  REE while fractionation/partial melting.\\
+  iii)\textbf{Pyroxenes}: orthopyroxenes have lower REE than
+  clinopyroxenes. In mafic rocks, REE are mostly present in
+  clinopyroxene. Pyroxenes have small -ve anomalies but maybe be higher
+  in clinopyroxenes.\\
+  iv)\textbf{Hornblende}: enriched in middle REE, have higher
+  concentration of HREE that forms a U-shaped REE pattern in melt.\\
+  v)\textbf{Garnet}: high abundance of HREE to the extent that they are
+  compatible whilst LREE aren't.\\
+  vi)\textbf{Muscovite}: enriched in REE, especially in felsic rocks.
+  -ve Eu anomaly.\\
+  vii)\textbf{Biotite}: less enriched in REE, -ve Eu anomaly.\\
+  viii)\textbf{Zircon}: deplete a melt in HREE.\\
+  ix)\textbf{Other accessory phases}: strong influence on REE pattern
+  even if they have low abundance. They have high partition coefficients
+  which result in disproportionate influence and depletion in REE.
+\item
+  Multi-element Diagrams (MeD):\\
+  i)\textbf{Chondrite-Normalised MeD}: advantageous since it uses
+  directly measured values instead of calculated ones. It might not be
+  very suitable for sediment and evolved igneous rocks ( do they mean
+  metamorphic?). They have plotted REE and and some other trace elements
+  in order of increasing mantle compatibility on log scale using
+  normalised values with McDonough and and Sun(1995) and Palme and
+  ONeil(2014) as reference values.\\
+  ii)In evolved igenous rocks, anomalies may be controlled by specific
+  mineral as mentioned in point 2 above where LREE are controlled by
+  allanite and HREE by garnet.
+\end{enumerate}
+
+\textbf{\emph{Research Paper- Wall (2012) :``Rare Earth Elements:
+Minerals, Mines, Magnets''}}
+
+\textbf{\emph{Research Paper- O'Neill(2016) :``The Smoothness and Shapes
+of Chondrite-normalized Rare Earth Element Patterns in Basalts''}}
+
+\textbf{\emph{Code for Week 1: Spider Plot Function}}
+
+In a Spider Diagram, we will be representing the log normalised
+concentrations of Rare Earth Elements. The following Elements will be
+plotted: La-Lanthanum, Ce- Cerium, Pr- Praseodymium, Nd- Neodymium, Pm-
+Promethium, Sm- Samarium, Eu- Europium, Gd- Gadolinium,, Tb- Terbium,
+Dy- Dysprosium, Ho- Holmium, Er- Erbium, Tm- Thulium, Yb- Ytterbium, Lu-
+Lutetium
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#downloading dataset}
+\NormalTok{adakite }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\AttributeTok{file =} \StringTok{\textquotesingle{}Data/ADAKITE.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{ref }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{\textquotesingle{}Data/Normalised Values.csv\textquotesingle{}}\NormalTok{)}
+\CommentTok{\# gathering REE data from sample}
+\NormalTok{ree\_sample1 }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(adakite[}\DecValTok{19}\NormalTok{, }\DecValTok{119}\SpecialCharTok{:}\DecValTok{132}\NormalTok{])}
+\CommentTok{\#}
+\NormalTok{ree\_ref }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(ref[}\DecValTok{3}\SpecialCharTok{:}\DecValTok{16}\NormalTok{, }\DecValTok{14}\NormalTok{]) }\CommentTok{\#column 4,5 dont work}
+
+\CommentTok{\#this is a function for plotting spider plots for REE data}
+\NormalTok{plot\_spider }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(samples,reference\_values,}\AttributeTok{logscale=}\ConstantTok{TRUE}\NormalTok{,}\AttributeTok{colors=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{main=} \StringTok{"Spider Plot for Normalised REE Values"}\NormalTok{,}\AttributeTok{xlab=}\StringTok{"Rare Earth Elements"}\NormalTok{,}\AttributeTok{ylab =}\StringTok{"Normalised values"}\NormalTok{)}
+\NormalTok{\{}
+  \CommentTok{\# these are the REE we will be covering generally}
+\NormalTok{  REE\_symbols }\OtherTok{\textless{}{-}}  \FunctionTok{c}\NormalTok{(}\StringTok{"La"}\NormalTok{,}\StringTok{"Ce"}\NormalTok{,}\StringTok{"Pr"}\NormalTok{,}\StringTok{"Nd"}\NormalTok{,}\StringTok{"Sm"}\NormalTok{,}\StringTok{"Eu"}\NormalTok{,}\StringTok{"Gd"}\NormalTok{,}\StringTok{"Tb"}\NormalTok{,}\StringTok{"Dy"}\NormalTok{,}\StringTok{"Ho"}\NormalTok{,}\StringTok{"Er"}\NormalTok{,}\StringTok{"Tm"}\NormalTok{,}\StringTok{"Yb"}\NormalTok{,}\StringTok{"Lu"}\NormalTok{)}
+  \CommentTok{\# normalising values of samples with the reference set}
+\NormalTok{  normalised\_values }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(samples,}\ControlFlowTok{function}\NormalTok{(s1) }\FunctionTok{as.numeric}\NormalTok{(s1)}\SpecialCharTok{/}\FunctionTok{as.numeric}\NormalTok{(reference\_values))}
+  \CommentTok{\#axis range}
+\NormalTok{  ymin }\OtherTok{\textless{}{-}} \ControlFlowTok{if}\NormalTok{ (logscale) }\FunctionTok{min}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(normalised\_values), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\ControlFlowTok{else} \DecValTok{0}
+\NormalTok{  ymax }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(normalised\_values), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+  \CommentTok{\# generate plot }
+  \FunctionTok{plot}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(reference\_values),normalised\_values[[}\DecValTok{1}\NormalTok{]],}\AttributeTok{type=}\StringTok{"b"}\NormalTok{,}\AttributeTok{xaxt=}\StringTok{"n"}\NormalTok{,,}\AttributeTok{xlab=}\StringTok{"Rare Earth Elements"}\NormalTok{,}\AttributeTok{ylab =}\StringTok{"Concentration"}\NormalTok{,}\AttributeTok{log =} \StringTok{\textquotesingle{}y\textquotesingle{}}\NormalTok{,}\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax))}
+  \FunctionTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{,}\AttributeTok{at=}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(reference\_values),}\AttributeTok{labels =}\NormalTok{ REE\_symbols)}
+  \FunctionTok{grid}\NormalTok{(}\AttributeTok{nx=}\ConstantTok{NULL}\NormalTok{, }\AttributeTok{ny=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{col=}\StringTok{"gray"}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{1}\NormalTok{)}
+  \FunctionTok{abline}\NormalTok{(}\AttributeTok{h=}\DecValTok{1}\NormalTok{,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{3}\NormalTok{)}
+  
+  \CommentTok{\# generate other plots }
+   \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(normalised\_values)}\SpecialCharTok{\textgreater{}}\DecValTok{1}\NormalTok{)}
+\NormalTok{   \{ }
+       \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(normalised\_values))}
+\NormalTok{       \{}
+         \FunctionTok{lines}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(normalised\_values),normalised\_values[[i]],}\AttributeTok{type=}\StringTok{"b"}\NormalTok{)}
+\NormalTok{       \}}
+\NormalTok{   \}}
+\NormalTok{\}}
+\NormalTok{samples }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(ree\_sample1)}
+
+\FunctionTok{plot\_spider}\NormalTok{(samples, ree\_ref,}\AttributeTok{main =} \StringTok{"REE Spider Diagram (Sample 19, Reference: m\&s )"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{WeeklyLog_files/figure-latex/unnamed-chunk-1-1.pdf}}
+
+\end{document}

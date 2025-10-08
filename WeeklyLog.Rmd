@@ -3,8 +3,8 @@ title: "Weekly Log"
 author: "Sushant"
 date: "2025-10-02"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 <font size="5">**Week 1 Reading Notes:**</font>   
@@ -31,15 +31,11 @@ ix)**Other accessory phases**: strong influence on REE pattern even if they have
 i)**Chondrite-Normalised MeD**: advantageous since it uses directly measured values instead of calculated ones. It might not be very suitable for sediment and evolved igneous rocks ( do they mean metamorphic?). They have plotted REE and and some other trace elements in order of increasing mantle compatibility on log scale using normalised values with McDonough and and Sun(1995) and Palme and ONeil(2014) as reference values.  
 ii)In evolved igenous rocks, anomalies may be controlled by specific mineral as mentioned in point 2 above where LREE are controlled by allanite and HREE by garnet. 
 
-<font size="3">***Research Paper- Wall (2012) :"Rare Earth Elements: Minerals, Mines, Magnets"***</font>
-
-<font size="3">***Research Paper- O'Neill(2016) :"The Smoothness and Shapes of Chondrite-normalized Rare Earth Element Patterns in Basalts"***</font>
-
 <font size="5">***Code for Week 1: Spider Plot Function***</font>
 
 In a Spider Diagram, we will be representing the log normalised concentrations of Rare Earth Elements. The following Elements will be plotted: 
 La-Lanthanum, Ce- Cerium, Pr- Praseodymium, Nd- Neodymium, Pm- Promethium, Sm- Samarium, Eu- Europium, Gd- Gadolinium,, Tb- Terbium, Dy- Dysprosium, Ho- Holmium, Er- Erbium, Tm- Thulium, Yb- Ytterbium, Lu- Lutetium 
-```{r}
+```{r, echo=TRUE}
 #downloading dataset
 adakite <- read.csv(file = 'Data/ADAKITE.csv')
 ref <- read.csv(file='Data/Normalised Values.csv')
@@ -62,6 +58,7 @@ plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main=
   plot(1:length(reference_values),normalised_values[[1]],type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Concentration",log = 'y',ylim = c(ymin, ymax))
   axis(1,at=1:length(reference_values),labels = REE_symbols)
   grid(nx=NULL, ny=NULL,col="gray",lwd=1)
+  
   abline(h=1,col="black",lwd=3)
   
   # generate other plots 
@@ -78,6 +75,8 @@ samples <- list(ree_sample1)
 plot_spider(samples, ree_ref,main = "REE Spider Diagram (Sample 19, Reference: m&s )")
 ```
 
+
+<font size="3">***Research Paper- O'Neill(2016) :"The Smoothness and Shapes of Chondrite-normalized Rare Earth Element Patterns in Basalts"***</font>
 
 
 
