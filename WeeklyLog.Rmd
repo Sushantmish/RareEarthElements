@@ -119,6 +119,15 @@ plot_spider(samples, ree_ref,main = "REE Spider Diagram (Sample 19, Reference: m
 
 <font size="3">***Research Paper- O'Neill(2016) :"The Smoothness and Shapes of Chondrite-normalized Rare Earth Element Patterns in Basalts"***</font>
 
+1. Normalised REE patterns are important to study since they provide information about behaviour of incompatible trace elements. 
+2. Spider Plots are problematic since they 'destroy' the shape of the REE pattern.
+3. Aim of this paper is to quantify REE shapes precisely with a large number of datasets.
+4. **Lanthanide Contraction**: 5s and 5p shells contract towards the nucleus due increased nuclear charge as a result of the 4f electrons present in the shell before them. 
+5. The 3+ ionic state governs chemical properties of REE. 
+6. Z and ionic radius can both be used as independent variables to plot normalised REE data to produce smooth graphs. 
+7. Y/Ho values are almost constant due similar ionic radii. 
+8. Anomaly in smoothness is due to Eu2+ state which has a half filled subshell providing stability. 
+9. If Eu2+ /Eu3+ is measurably greater than zero in a petrogenetic process, the Eu partition coefficient for that process will deviate(due to Eu anomaly) from the smooth pattern estalished by the other REE 
 <font size="3">***Research Paper- Coryell,Chase & Winchester(1963) :"A Procedure for Geochemical Interpretation of Terrestrial Rare-Earth Abundance Patterns"***</font>
 
 <font size="3">***Research Paper- Anenburg(2020) :"Rare earth mineral diversity controlled by REE pattern shapes"***</font>
