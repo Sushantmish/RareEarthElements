@@ -1,0 +1,72 @@
+---
+title: "Spider Test"
+author: "Sushant"
+date: "2025-09-11"
+output: html_document
+---
+
+Downloaded rock data from Georoc
+```{r}
+adakite <- read.csv(file = 'ADAKITE.csv')
+ref <- read.csv(file='normalised values.csv')
+```
+
+In a Spider Diagram, we will be representing the PPM concentrations of Rare Earth Elements. The following Elements will be plotted: 
+La-Lanthanum, Ce- Cerium, Pr- Praseodymium, Nd- Neodymium, Pm- Promethium, Sm- Samarium, Eu- Europium, Gd- Gadolinium,, Tb- Terbium, Dy- Dysprosium, Ho- Holmium, Er- Erbium, Tm- Thulium, Yb- Ytterbium, Lu- Lutetium 
+
+Our plot will be in the order: 
+```{r}
+REE_symbols <-  c("La","Ce","Pr","Nd","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu")
+```
+Plotting the concentration of REEs in a sample of Adakite 
+```{r}
+sample1 <- adakite[19,]
+ree_sample1 <- sample1[,119:132]
+plot(1:14,ree_sample1,type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Concentration in ppm",log = 'y')
+axis(1, at=1:14, labels=REE_symbols)
+```
+
+Plot with normalised values
+```{r}
+ree_AG <- ref[,14] # change column number to change standard data value, doesn't work on column no.4,5  
+ree_ref <- ree_AG[3:16]
+sample1_norm <- ree_sample1/ree_ref
+plot(1:14,sample1_norm,type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Normalised values",log = 'y')
+axis(1, at=1:14, labels=REE_symbols)
+```
+More samples of adakites: 
+```{r}
+sample2 <- adakite[20,]
+sample3 <- adakite[21,]
+sample4 <- adakite[65,]
+sample5 <- adakite[117,]
+ree_sample2 <-sample2[,119:132]
+ree_sample3 <-sample3[,119:132]
+ree_sample4 <-sample4[,119:132]
+ree_sample5 <-sample5[,119:132]
+
+```
+Plotting these concentrations with the first one
+```{r}
+plot(1:14,ree_sample1,type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Concentration in ppm",log = 'y',col="blue")
+axis(1, at=1:14, labels=REE_symbols)
+lines(1:14,ree_sample2,type="b",col="black")
+lines(1:14,ree_sample3,type="b",col="red")
+lines(1:14,ree_sample4,type="b",col="green")
+lines(1:14,ree_sample5,type="b",col="yellow")
+```
+Normalised values of these 5 samples
+```{r}
+sample2_norm <- ree_sample2 / ree_ref
+sample3_norm <- ree_sample3 / ree_ref
+sample4_norm <- ree_sample4 / ree_ref
+sample5_norm <- ree_sample5 / ree_ref
+plot(1:14,sample1_norm,type="b",xaxt="n",xlab="Rare Earth Elements",ylab ="Normalised values",log = 'y',col="blue")
+grid(nx=NULL, ny=NULL,col="gray",lwd=1)
+abline(h=1,col="black",lwd=3)
+axis(1, at=1:14, labels=REE_symbols)
+lines(1:14,sample2_norm,type="b",col="black")
+lines(1:14,sample3_norm,type="b",col="red")
+lines(1:14,sample4_norm,type="b",col="green")
+lines(1:14,sample5_norm,type="b",col="yellow")
+```
