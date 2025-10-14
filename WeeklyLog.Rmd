@@ -10,9 +10,9 @@ output:
 <font size="5">**Week 1 Reading Notes:**</font>   
 <font size="3">***Book: Using Geochemical Data (Rollinson and Pease)***</font>
 
-1. Normalising values can be chosen from 2 sets:   
-i) CI chondrites   
-ii) Ordinary chrondrites (volatile free, tend to have higher values).  
+1. Normalising values can be chosen from 2 sets:      
+i)CI chondrites   
+ii)Ordinary chrondrites (volatile free, tend to have higher values).  
 Therefore, it is important to cite the right data set. See pg.130 for dataset.   
 Shale normalisation is used for upper crust sediments while Chondrite normalisation will be used in our project since we want to compare igneous rocks to primitive solar system. 
 
@@ -77,7 +77,7 @@ colors <- c("black","red","yellow","lightblue","green","orange","pink","cyan","p
 rock_names <- c("adakite","alkali_basalt","andesite","anakaramite","basalt","dolerite","gabbro","granite","hawaiite","kimberlite","peridotite","pyroxenite","rhyolite")
 ```
 
-
+Spider Plot Function
 ```{r}
 #this is a function for plotting spider plots for REE data
 plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main= "Spider Plot for Normalised REE Values",xlab="Rare Earth Elements",ylab ="Normalised values")
@@ -128,11 +128,37 @@ plot_spider(samples, ree_ref,main = "REE Spider Diagram (Sample 19, Reference: m
 7. Y/Ho values are almost constant due similar ionic radii. 
 8. Anomaly in smoothness is due to Eu2+ state which has a half filled subshell providing stability. 
 9. If Eu2+ /Eu3+ is measurably greater than zero in a petrogenetic process, the Eu partition coefficient for that process will deviate(due to Eu anomaly) from the smooth pattern estalished by the other REE 
+
 <font size="3">***Research Paper- Coryell,Chase & Winchester(1963) :"A Procedure for Geochemical Interpretation of Terrestrial Rare-Earth Abundance Patterns"***</font>
+
+1. The zig--zag pattern in REE concentration plots emerges from relative enrichment or depletion of REE during natural processes. This zig zag pattern can be removed by normalising the REE abundance with bronzite chondrite REE concentrations. 
+2. Eu abundance is considerably low for most minerals(by factor of 14 for samarskite, 3.7 for euxenite, 2.6 for monazite, 5.5 for xenotime)  due to it being divalent at some stage. 
+3. The technique of extrapolation of the best fit line in a normalised graph is of great value as it helps deteremine values of other REE that might have not been measured in the sample. It also makes it possible to determine REE abundance in whole new rock.  
+4. **Kirovograd Granite**:( How do you interpret these graphs? )  
+i)HREE very high in garnet and apatite.    
+ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z. 
+5. LREE are more enriched than HREE in basalt. 
+
 
 <font size="3">***Research Paper- Anenburg(2020) :"Rare earth mineral diversity controlled by REE pattern shapes"***</font>
 
-
+1. **Aim**: use lambda combinations to construct CI normalised REE plots in such a way that REE patterns for natural materials become predictable.  
+2. La3+: large ionic radii, Lu3+: quite small due to lanthanide contraction.   
+3. **LREE**: La to Sm.    
+4. **MREE**: Sm to Dy.    
+5. **HREE**: Eu to Lu.    
+6. **Oddo–Harkins Rule**: elements with even atomic numbers are more abundant than their neighbouring odd-numbered elements. 7.**λ0** is the overall abundance of the REE.  
+8. **λ1** is the linear slope (most instructive).        
+9. **λ2** is the quadratic curvature (most instructive).    
+10. **λ3** represents the inflections at the ends of patterns (sinusoidality).    
+11. **λ4** term is required if any ‘W’ pattern is present.     
+12. LaN/LuN is a measure of the overall slope of the pattern.LaN/ SmN is a measure of the LREE enrichment of a pattern. These are not always useful to represent sinusoidality or curves which makes authors use differnet ratios leading to too much confusion and biases.  
+[REE Pattern for dif Lambda](setwd("~/Desktop/MSci Project/RareEarthElements/Images/REE Pattern for dif lambda value").png).  
+13. ask **Problem Statement**: In the graph above, the curve has been modified into from 1a to 1b after changing λ1 values but we can't get any information.In 1b, whether the HREE are a straight line is hard to interpret. 1c gets rid of the quadratic pattern. 
+14. **They have generated REE patterns for λ values.**.  
+15. Ce and Y dominate the REE pattern, just like the real world where they make up nearly 75.7% of REE minerals.Without Ce and Y other REE like La,Dy,Yb,Nd dominate. Yb is most dominant in these Ce and Y absent graphs.    
+16. Eu is present in high concentrations in Ca-rich minerals like plagioclase and epidote. Eu anomaly needs to be at a certain level to be dominant for different λ values. Eu rich mineral could be found in anorthosites or epidosites. 
+17. If Y is removed from the Levison suffixes, more REE minerals can be discovered. 
 
 
 

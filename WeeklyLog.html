@@ -361,21 +361,15 @@ display: none;
 <font size="3"><strong><em>Book: Using Geochemical Data (Rollinson and
 Pease)</em></strong></font></p>
 <ol style="list-style-type: decimal">
-<li>Normalising values can be chosen from 2 sets:<br />
-</li>
-</ol>
-<ol style="list-style-type: lower-roman">
-<li>CI chondrites<br />
-</li>
-<li>Ordinary chrondrites (volatile free, tend to have higher
+<li><p>Normalising values can be chosen from 2 sets:<br />
+i)CI chondrites<br />
+ii)Ordinary chrondrites (volatile free, tend to have higher
 values).<br />
 Therefore, it is important to cite the right data set. See pg.130 for
 dataset.<br />
 Shale normalisation is used for upper crust sediments while Chondrite
 normalisation will be used in our project since we want to compare
-igneous rocks to primitive solar system.</li>
-</ol>
-<ol start="2" style="list-style-type: decimal">
+igneous rocks to primitive solar system.</p></li>
 <li><p>REE in minerals in Igneous Rocks:<br />
 i)<strong>Feldspars</strong>: low concentration, but when in felsic
 rocks, Eu anomaly is positive<br />
@@ -453,6 +447,7 @@ ree_sample13 &lt;- as.numeric(rhyolite[20, 119:132])
 ree_ref &lt;- as.numeric(ref[3:16, 14]) #column 4,5 dont work
 colors &lt;- c(&quot;black&quot;,&quot;red&quot;,&quot;yellow&quot;,&quot;lightblue&quot;,&quot;green&quot;,&quot;orange&quot;,&quot;pink&quot;,&quot;cyan&quot;,&quot;purple&quot;,&quot;brown&quot;,&quot;gold&quot;,&quot;violet&quot;,&quot;navy&quot;)
 rock_names &lt;- c(&quot;adakite&quot;,&quot;alkali_basalt&quot;,&quot;andesite&quot;,&quot;anakaramite&quot;,&quot;basalt&quot;,&quot;dolerite&quot;,&quot;gabbro&quot;,&quot;granite&quot;,&quot;hawaiite&quot;,&quot;kimberlite&quot;,&quot;peridotite&quot;,&quot;pyroxenite&quot;,&quot;rhyolite&quot;)</code></pre>
+<p>Spider Plot Function</p>
 <pre class="r"><code>#this is a function for plotting spider plots for REE data
 plot_spider &lt;- function(samples,reference_values,logscale=TRUE,colors=NULL,main= &quot;Spider Plot for Normalised REE Values&quot;,xlab=&quot;Rare Earth Elements&quot;,ylab =&quot;Normalised values&quot;)
 {
@@ -499,14 +494,85 @@ information about behaviour of incompatible trace elements.</li>
 REE pattern.</li>
 <li>Aim of this paper is to quantify REE shapes precisely with a large
 number of datasets.</li>
-<li></li>
+<li><strong>Lanthanide Contraction</strong>: 5s and 5p shells contract
+towards the nucleus due increased nuclear charge as a result of the 4f
+electrons present in the shell before them.</li>
+<li>The 3+ ionic state governs chemical properties of REE.</li>
+<li>Z and ionic radius can both be used as independent variables to plot
+normalised REE data to produce smooth graphs.</li>
+<li>Y/Ho values are almost constant due similar ionic radii.</li>
+<li>Anomaly in smoothness is due to Eu2+ state which has a half filled
+subshell providing stability.</li>
+<li>If Eu2+ /Eu3+ is measurably greater than zero in a petrogenetic
+process, the Eu partition coefficient for that process will deviate(due
+to Eu anomaly) from the smooth pattern estalished by the other REE</li>
 </ol>
 <p><font size="3"><strong><em>Research Paper- Coryell,Chase &amp;
 Winchester(1963) :“A Procedure for Geochemical Interpretation of
 Terrestrial Rare-Earth Abundance Patterns”</em></strong></font></p>
+<ol style="list-style-type: decimal">
+<li>The zig–zag pattern in REE concentration plots emerges from relative
+enrichment or depletion of REE during natural processes. This zig zag
+pattern can be removed by normalising the REE abundance with bronzite
+chondrite REE concentrations.</li>
+<li>Eu abundance is considerably low for most minerals(by factor of 14
+for samarskite, 3.7 for euxenite, 2.6 for monazite, 5.5 for xenotime)
+due to it being divalent at some stage.</li>
+<li>The technique of extrapolation of the best fit line in a normalised
+graph is of great value as it helps deteremine values of other REE that
+might have not been measured in the sample. It also makes it possible to
+determine REE abundance in whole new rock.<br />
+</li>
+<li><strong>Kirovograd Granite</strong>:( How do you interpret these
+graphs? )<br />
+i)HREE very high in garnet and apatite.<br />
+ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.</li>
+<li>LREE are more enriched than HREE in basalt.</li>
+</ol>
 <p><font size="3"><strong><em>Research Paper- Anenburg(2020) :“Rare
 earth mineral diversity controlled by REE pattern
 shapes”</em></strong></font></p>
+<ol style="list-style-type: decimal">
+<li><strong>Aim</strong>: use lambda combinations to construct CI
+normalised REE plots in such a way that REE patterns for natural
+materials become predictable.<br />
+</li>
+<li>La3+: large ionic radii, Lu3+: quite small due to lanthanide
+contraction.<br />
+</li>
+<li><strong>LREE</strong>: La to Sm.<br />
+</li>
+<li><strong>MREE</strong>: Sm to Dy.<br />
+</li>
+<li><strong>HREE</strong>: Eu to Lu.<br />
+</li>
+<li><strong>Oddo–Harkins Rule</strong>: elements with even atomic
+numbers are more abundant than their neighbouring odd-numbered elements.
+7.<strong>λ0</strong> is the overall abundance of the REE.<br />
+</li>
+<li><strong>λ1</strong> is the linear slope (most instructive).<br />
+</li>
+<li><strong>λ2</strong> is the quadratic curvature (most
+instructive).<br />
+</li>
+<li><strong>λ3</strong> represents the inflections at the ends of
+patterns (sinusoidality).<br />
+</li>
+<li><strong>λ4</strong> term is required if any ‘W’ pattern is
+present.<br />
+</li>
+<li>LaN/LuN is a measure of the overall slope of the pattern.LaN/ SmN is
+a measure of the LREE enrichment of a pattern. These are not always
+useful to represent sinusoidality or curves which makes authors use
+differnet ratios leading to too much confusion and biases.<br />
+<a href="setwd(%22~/Desktop/MSci%20Project/RareEarthElements/Images/REE%20Pattern%20for%20dif%20lambda%20value%22).png">REE
+Pattern for dif Lambda</a>.<br />
+</li>
+<li>ask <strong>Problem Statement</strong>: In the graph above, the
+curve has been modified into from 1a to 1b after changing λ1 values but
+we can’t get any information.In 1b, whether the HREE are a straight line
+is hard to interpret. 1c gets rid of the quadratic pattern.</li>
+</ol>
 
 
 
