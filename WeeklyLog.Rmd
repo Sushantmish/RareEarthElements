@@ -153,7 +153,7 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 10. **λ3** represents the inflections at the ends of patterns (sinusoidality).    
 11. **λ4** term is required if any ‘W’ pattern is present.     
 12. LaN/LuN is a measure of the overall slope of the pattern.LaN/ SmN is a measure of the LREE enrichment of a pattern. These are not always useful to represent sinusoidality or curves which makes authors use differnet ratios leading to too much confusion and biases.  
-[REE Pattern for dif Lambda](setwd("~/Desktop/MSci Project/RareEarthElements/Images/REE Pattern for dif lambda value").png).  
+![Lambda]("Images/Screenshot1.png")
 13. ask **Problem Statement**: In the graph above, the curve has been modified into from 1a to 1b after changing λ1 values but we can't get any information.In 1b, whether the HREE are a straight line is hard to interpret. 1c gets rid of the quadratic pattern. 
 14. **They have generated REE patterns for λ values.**.  
 15. Ce and Y dominate the REE pattern, just like the real world where they make up nearly 75.7% of REE minerals.Without Ce and Y other REE like La,Dy,Yb,Nd dominate. Yb is most dominant in these Ce and Y absent graphs.    
