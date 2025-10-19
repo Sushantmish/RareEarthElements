@@ -153,14 +153,13 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 10. **λ3** represents the inflections at the ends of patterns (sinusoidality).    
 11. **λ4** term is required if any ‘W’ pattern is present.     
 12. LaN/LuN is a measure of the overall slope of the pattern.LaN/ SmN is a measure of the LREE enrichment of a pattern. These are not always useful to represent sinusoidality or curves which makes authors use differnet ratios leading to too much confusion and biases.  
-![Lambda]("Images/Screenshot1.png")
-13. ask **Problem Statement**: In the graph above, the curve has been modified into from 1a to 1b after changing λ1 values but we can't get any information.In 1b, whether the HREE are a straight line is hard to interpret. 1c gets rid of the quadratic pattern. 
-14. **They have generated REE patterns for λ values.**.  
-15. Ce and Y dominate the REE pattern, just like the real world where they make up nearly 75.7% of REE minerals.Without Ce and Y other REE like La,Dy,Yb,Nd dominate. Yb is most dominant in these Ce and Y absent graphs.    
-16. Eu is present in high concentrations in Ca-rich minerals like plagioclase and epidote. Eu anomaly needs to be at a certain level to be dominant for different λ values. Eu rich mineral could be found in anorthosites or epidosites. 
-17. If Y is removed from the Levison suffixes, more REE minerals can be discovered. 
+![Lambda](Images/Lambda_values.png)
+13. **They have generated REE patterns for λ values.**.  
+14. Ce and Y dominate the REE pattern, just like the real world where they make up nearly 75.7% of REE minerals.Without Ce and Y other REE like La,Dy,Yb,Nd dominate. Yb is most dominant in these Ce and Y absent graphs.    
+15. Eu is present in high concentrations in Ca-rich minerals like plagioclase and epidote. Eu anomaly needs to be at a certain level to be dominant for different λ values. Eu rich mineral could be found in anorthosites or epidosites. 
+16. If Y is removed from the Levison suffixes, more REE minerals can be discovered. 
 
-
+<font size="5">**Week 3 Code:**</font>  
 
 
 
