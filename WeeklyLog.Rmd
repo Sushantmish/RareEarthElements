@@ -159,7 +159,16 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 15. Eu is present in high concentrations in Ca-rich minerals like plagioclase and epidote. Eu anomaly needs to be at a certain level to be dominant for different λ values. Eu rich mineral could be found in anorthosites or epidosites. 
 16. If Y is removed from the Levison suffixes, more REE minerals can be discovered. 
 
-<font size="5">**Week 3 Code:**</font>  
+<font size="5">**Week 3 Notes**</font>  
 
+<font size="3">***Using AlambdaR website to understand effects to change in λ values on the shape of the Normalised Values vs REE radii***</font>
+
+*We have taken a negative Eu anomaly and positive Ce anomaly for all cases*
+
+1. **Changing λ0:** When other coefficients are kept constant, changing λ0 changes the CI-normalised concentration by a factor and no change in the shape of the curve is observed. The entire curve goes up if λ0 is increased and goes down if  λ0 is decreased.       
+2. **Changing λ1:** When other coefficients are kept constant, changing λ1 to a positive number or increasing it causes the concentration of HREEs to decrease while the LREEs are more abundant. When λ1 is decreased or changed to a negative number, the trend flips and HREEs become more abundant while LREEs have a lower concentration.      
+3. **Changing λ2:** When other coefficients are kept constant, increasing λ2 makes the Eu anomaly (at the vertex) is more prevelant as the curve becomes U-shaped withe the MREEs having low concentration while the LREEs and HREEs are more abundant. When λ2 is 0 or a small number (between -200 & +200) the curve is relatively straight and not parabolic. When λ2 is a large negative number, the MREEs have a higher abundance than LREEs and HREEs but negative Eu anomaly persists.    
+4. **Changing λ3:** adds to the cruvature, concentration doesn't change much even if it. is changed from +1000 to -1000. However, the sinusodiality becomes prevelant if λ3 is a very big or small number. It is hard to predict as clearly as prevoius cases how λ3 affects concentration.    
+5. **Changing λ4:** when other λ are kept in a reasonable value range, λ4 produces a W-shape only when it is the order of 10^4 which seems like a very unreasonable value. 
 
 
