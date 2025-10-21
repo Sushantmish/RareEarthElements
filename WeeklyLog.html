@@ -417,7 +417,7 @@ Lutetium</p>
 adakite &lt;- read.csv(file = &#39;Data/ADAKITE.csv&#39;)
 alkali_basalt &lt;- read.csv(file = &#39;Data/ALKALI_BASALT.csv&#39;)
 andesite &lt;- read.csv(file=&#39;Data/ANDESITE.csv&#39;)
-anakaramite &lt;- read.csv(file=&#39;Data/ANKARAMITE.csv&#39;)
+ankaramite &lt;- read.csv(file=&#39;Data/ANKARAMITE.csv&#39;)
 basalt &lt;- read.csv(file = &#39;Data/BASALT.csv&#39;)
 dolerite &lt;- read.csv(file=&#39;Data/DOLERITE.csv&#39;)
 gabbro &lt;- read.csv(file=&#39;Data/GABBRO.csv&#39;)
@@ -433,7 +433,7 @@ ref &lt;- read.csv(file=&#39;Data/Normalised Values.csv&#39;)</code></pre>
 ree_sample1 &lt;- as.numeric(adakite[19, 119:132]) 
 ree_sample2 &lt;- as.numeric(alkali_basalt[20, 119:132]) 
 ree_sample3 &lt;- as.numeric(andesite[7, 119:132]) 
-ree_sample4 &lt;- as.numeric(anakaramite[80, 119:132]) 
+ree_sample4 &lt;- as.numeric(ankaramite[80, 119:132]) 
 ree_sample5 &lt;- as.numeric(basalt[20, 119:132])
 ree_sample6 &lt;- as.numeric(dolerite[20, 119:132])
 ree_sample7 &lt;- as.numeric(gabbro[20, 119:132])
@@ -619,6 +619,29 @@ concentration.<br />
 value range, λ4 produces a W-shape only when it is the order of 10^4
 which seems like a very unreasonable value.</li>
 </ol>
+<p><font size="5"><strong><em>Code for Week 3: Data Simplifying
+Function</em></strong></font></p>
+<pre class="r"><code>data_simplifying &lt;- function(input_data)
+{
+  REE_list &lt;- c(&quot;LA.PPM.&quot;,&quot;CE.PPM.&quot;,&quot;PR.PPM.&quot;,&quot;ND.PPM.&quot;,&quot;SM.PPM.&quot;,&quot;EU.PPM.&quot;,&quot;GD.PPM.&quot;,&quot;TB.PPM.&quot;,&quot;DY.PPM.&quot;,&quot;HO.PPM.&quot;,&quot;ER.PPM.&quot;,&quot;TM.PPM.&quot;,&quot;YB.PPM.&quot;,&quot;LU.PPM.&quot;)
+  complete_row &lt;- complete.cases(input_data[, REE_list])
+  refined_REE_data &lt;- input_data[complete_row,REE_list]
+  
+} 
+
+simplified_adakite &lt;- data_simplifying(adakite)
+simplified_alkali_basalt &lt;- data_simplifying(alkali_basalt)
+simplified_andesite &lt;- data_simplifying(andesite)
+simplified_anakaramite &lt;- data_simplifying(ankaramite)
+simplified_basalt &lt;- data_simplifying(basalt)
+simplified_dolerite &lt;- data_simplifying(dolerite)
+simplified_gabbro &lt;- data_simplifying(gabbro)
+simplified_granite &lt;- data_simplifying(granite)
+simplified_hawaiite &lt;- data_simplifying(hawaiite)
+simplified_kimberlite &lt;- data_simplifying(kimberlite)
+simplified_peridotite &lt;- data_simplifying(peridotite)
+simplified_pyroxenite &lt;- data_simplifying(pyroxenite)
+simplified_rhyolite &lt;- data_simplifying(rhyolite)</code></pre>
 
 
 
