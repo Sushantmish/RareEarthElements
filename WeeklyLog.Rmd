@@ -37,7 +37,7 @@ In a Spider Diagram, we will be representing the log normalised concentrations o
 La-Lanthanum, Ce- Cerium, Pr- Praseodymium, Nd- Neodymium, Pm- Promethium, Sm- Samarium, Eu- Europium, Gd- Gadolinium,, Tb- Terbium, Dy- Dysprosium, Ho- Holmium, Er- Erbium, Tm- Thulium, Yb- Ytterbium, Lu- Lutetium 
 
 Data 
-```{r,echo=TRUE}
+```{r,echo=TRUE,eval=FALSE}
 #downloading dataset
 adakite <- read.csv(file = 'Data/ADAKITE.csv')
 alkali_basalt <- read.csv(file = 'Data/ALKALI_BASALT.csv')
@@ -56,7 +56,7 @@ ref <- read.csv(file='Data/Normalised Values.csv')
 ```
 
 Samples
-```{r}
+```{r,echo=TRUE,eval=FALSE}
 # gathering REE data from sample
 ree_sample1 <- as.numeric(adakite[19, 119:132]) 
 ree_sample2 <- as.numeric(alkali_basalt[20, 119:132]) 
@@ -78,7 +78,7 @@ rock_names <- c("adakite","alkali_basalt","andesite","anakaramite","basalt","dol
 ```
 
 Spider Plot Function
-```{r}
+```{r,echo=TRUE,eval=FALSE}
 #this is a function for plotting spider plots for REE data
 plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main= "Spider Plot for Normalised REE Values",xlab="Rare Earth Elements",ylab ="Normalised values")
 {
@@ -172,7 +172,7 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 5. **Changing λ4:** when other λ are kept in a reasonable value range, λ4 produces a W-shape only when it is the order of 10^4 which seems like a very unreasonable value. 
 
 <font size="5">***Code for Week 3: Data Simplifying Function***</font>
-```{r}
+```{r,echo=TRUE,eval=FALSE}
 data_simplifying <- function(input_data)
 {
   REE_list <- c("LA.PPM.","CE.PPM.","PR.PPM.","ND.PPM.","SM.PPM.","EU.PPM.","GD.PPM.","TB.PPM.","DY.PPM.","HO.PPM.","ER.PPM.","TM.PPM.","YB.PPM.","LU.PPM.")
@@ -180,7 +180,6 @@ data_simplifying <- function(input_data)
   refined_REE_data <- input_data[complete_row,REE_list]
   
 } 
-
 simplified_adakite <- data_simplifying(adakite)
 simplified_alkali_basalt <- data_simplifying(alkali_basalt)
 simplified_andesite <- data_simplifying(andesite)
@@ -195,5 +194,10 @@ simplified_peridotite <- data_simplifying(peridotite)
 simplified_pyroxenite <- data_simplifying(pyroxenite)
 simplified_rhyolite <- data_simplifying(rhyolite)
 
-
 ```
+
+
+<font size="5">***Code for Week 4: Simplification of all data***</font>
+
+
+
