@@ -74,11 +74,11 @@ ree_sample13 <- as.numeric(rhyolite[20, 119:132])
 # taking reference values 
 ree_ref <- as.numeric(ref[3:16, 14]) #column 4,5 dont work
 colors <- c("black","red","yellow","lightblue","green","orange","pink","cyan","purple","brown","gold","violet","navy")
-rock_names <- c("adakite","alkali_basalt","andesite","anakaramite","basalt","dolerite","gabbro","granite","hawaiite","kimberlite","peridotite","pyroxenite","rhyolite")
+rock_names_graph <- c("adakite","alkali_basalt","andesite","anakaramite","basalt","dolerite","gabbro","granite","hawaiite","kimberlite","peridotite","pyroxenite","rhyolite")
 ```
 
 Spider Plot Function
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=TRUE,eval=TRUE}
 #this is a function for plotting spider plots for REE data
 plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main= "Spider Plot for Normalised REE Values",xlab="Rare Earth Elements",ylab ="Normalised values")
 {
@@ -108,8 +108,11 @@ plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main=
          lines(1:length(reference_values),normalised_values[[i]],type="b",col=colors[i])
        }
    }
-   legend("right", legend = rock_names, col = colors[1:length(samples)], lty = 1, lwd = 2, bty = "n")
+   legend("right", legend = rock_names_graph, col = colors[1:length(samples)], lty = 1, lwd = 2, bty = "n")
 }
+```
+
+```{r,echo=TRUE,eval=FALSE}
 samples <- list(ree_sample1,ree_sample2,ree_sample3,ree_sample4,ree_sample5,ree_sample6,ree_sample7,ree_sample8,ree_sample9,ree_sample10,ree_sample11,ree_sample12,ree_sample13)
 
 plot_spider(samples, ree_ref,main = "REE Spider Diagram (Sample 19, Reference: m&s )")
@@ -172,14 +175,18 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 5. **Changing λ4:** when other λ are kept in a reasonable value range, λ4 produces a W-shape only when it is the order of 10^4 which seems like a very unreasonable value. 
 
 <font size="5">***Code for Week 3: Data Simplifying Function***</font>
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=TRUE,eval=TRUE}
 data_simplifying <- function(input_data)
 {
-  REE_list <- c("LA.PPM.","CE.PPM.","PR.PPM.","ND.PPM.","SM.PPM.","EU.PPM.","GD.PPM.","TB.PPM.","DY.PPM.","HO.PPM.","ER.PPM.","TM.PPM.","YB.PPM.","LU.PPM.")
+  REE_list <- c("LATITUDE.MIN","LONGITUDE.MIN","ROCK.NAME","LA.PPM.","CE.PPM.","PR.PPM.","ND.PPM.","SM.PPM.","EU.PPM.","GD.PPM.","TB.PPM.","DY.PPM.","HO.PPM.","ER.PPM.","TM.PPM.","YB.PPM.","LU.PPM.")
   complete_row <- complete.cases(input_data[, REE_list])
   refined_REE_data <- input_data[complete_row,REE_list]
   
 } 
+
+```
+
+```{r,echo=TRUE,eval=FALSE}
 simplified_adakite <- data_simplifying(adakite)
 simplified_alkali_basalt <- data_simplifying(alkali_basalt)
 simplified_andesite <- data_simplifying(andesite)
@@ -198,6 +205,22 @@ simplified_rhyolite <- data_simplifying(rhyolite)
 
 
 <font size="5">***Code for Week 4: Simplification of all data***</font>
+```{r}
+rock_files_csv <- list.files(path="~/Desktop/MSci Project/Rock Files CSV",full.names = TRUE)
+rock_list_read <- lapply(rock_files_csv,read.csv)
+simplified_rocks <- lapply(rock_list_read,data_simplifying)
+# This is the list of all rocks 
+list_of_rocks <- c("Adakite_simplified","Alkali_Basalt_simplified","Andesite_simplified","Ankaramite_simplified","Basalt_simplified","Basaltic-Andesite_simplified","Basaltic-Trachyandesite_simplified","Basanite_simplified","Benmoreite_simplified","Boninite_simplified","Calc-Alkali_Basalt_simplified","Carbonatite_simplified","Comenditic_Rhyolite_simplified","Dacite_simplified","Diorite_simplified","Dolerite_simplified","Dunite_simplified","Foidite_simplified","Gabbro_simplified","Granite_simplified","Granodiorite_simplified","Harzburgite_simplified","Hawaiite_simplified","Kimberlite_simplified","Komatiite_simplified","Lamproite_simplified","Lamprophyre_simplified","Latite_simplified","leucitite_simplified","Lherzolite_simplified","Melilitite_simplified","Mugearite_simplified","Nephelinite_simplified","Oceanite_simplified","Ore_simplified","Orthopyroxenite_simplified","Pantelleritic_simplified","Peridotite_simplified","Phonolite_simplified","Phonolitic-Tephrite_simplified","Phoscorite_simplified","Picrite_simplified","Pyroxenite_simplified","Rhyodacite_simplified","Rhyolite_simplified","Shoshonite_simplified","Subalkali_Basalt_simplified","Tephrite_simplified","Tephritic-Phonolite_simplified","Tholeiitic_Andesite_simplified","Tholeiitic_Basalt_simplified","Tonalite_simplified","Trachyandesite_simplified","Trachybasalt_simplified","Trachydacite_simplified","Trachyte_simplified","Transitional_Basalt_simplified","Wehrlite_simplified")
 
+#Saving each rock as different file 
+names(simplified_rocks) <- list_of_rocks
+dir.create(path = "~/Desktop/MSci Project/RareEarthElements/Simplified_Data")
+for (rock_name in names(simplified_rocks))
+     {
+       saveas <- simplified_rocks[[rock_name]]
+       directory <- paste0("~/Desktop/MSci Project/RareEarthElements/Simplified_Data",rock_name,".csv")
+       write.csv(saveas,file = directory,row.names = FALSE)
+     }
+```
 
 
