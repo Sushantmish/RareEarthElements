@@ -178,7 +178,7 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 ```{r,echo=TRUE,eval=TRUE}
 data_simplifying <- function(input_data)
 {
-  REE_list <- c("LATITUDE.MIN","LONGITUDE.MIN","ROCK.NAME","LA.PPM.","CE.PPM.","PR.PPM.","ND.PPM.","SM.PPM.","EU.PPM.","GD.PPM.","TB.PPM.","DY.PPM.","HO.PPM.","ER.PPM.","TM.PPM.","YB.PPM.","LU.PPM.")
+  REE_list <- c("LOCATION","LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX","ROCK NAME","LA(PPM)","CE(PPM)","PR(PPM)","ND(PPM)","SM(PPM)","EU(PPM)","GD(PPM)","TB(PPM)","DY(PPM)","HO(PPM)","ER(PPM)","TM(PPM)","YB(PPM)","LU(PPM)")
   complete_row <- complete.cases(input_data[, REE_list])
   refined_REE_data <- input_data[complete_row,REE_list]
   
@@ -207,46 +207,85 @@ simplified_rhyolite <- data_simplifying(rhyolite)
 <font size="5">***Code for Week 4: Simplification of all data***</font>
 ```{r}
 rock_files_csv <- list.files(path="~/Desktop/MSci Project/Rock Files CSV",full.names = TRUE)
-rock_list_read <- lapply(rock_files_csv,read.csv)
+rock_list_read <- lapply(rock_files_csv,read.csv,check.names=FALSE)
+rock_files_names_extract <- basename(rock_files_csv)
+rock_files_names <- sub(".csv","",rock_files_names_extract)
+names(rock_list_read) <- rock_files_names
 simplified_rocks <- lapply(rock_list_read,data_simplifying)
 ```
 
 Saving simplified data in new folder
-```{r}
-# This is the list of all rocks 
-list_of_rocks <- c("Adakite_simplified","Alkali_Basalt_simplified","Andesite_simplified","Ankaramite_simplified","Basalt_simplified","Basaltic-Andesite_simplified","Basaltic-Trachyandesite_simplified","Basanite_simplified","Benmoreite_simplified","Boninite_simplified","Calc-Alkali_Basalt_simplified","Carbonatite_simplified","Comenditic_Rhyolite_simplified","Dacite_simplified","Diorite_simplified","Dolerite_simplified","Dunite_simplified","Foidite_simplified","Gabbro_simplified","Granite_simplified","Granodiorite_simplified","Harzburgite_simplified","Hawaiite_simplified","Kimberlite_simplified","Komatiite_simplified","Lamproite_simplified","Lamprophyre_simplified","Latite_simplified","leucitite_simplified","Lherzolite_simplified","Melilitite_simplified","Mugearite_simplified","Nephelinite_simplified","Oceanite_simplified","Ore_simplified","Orthopyroxenite_simplified","Pantelleritic_simplified","Peridotite_simplified","Phonolite_simplified","Phonolitic-Tephrite_simplified","Phoscorite_simplified","Picrite_simplified","Pyroxenite_simplified","Rhyodacite_simplified","Rhyolite_simplified","Shoshonite_simplified","Subalkali_Basalt_simplified","Tephrite_simplified","Tephritic-Phonolite_simplified","Tholeiitic_Andesite_simplified","Tholeiitic_Basalt_simplified","Tonalite_simplified","Trachyandesite_simplified","Trachybasalt_simplified","Trachydacite_simplified","Trachyte_simplified","Transitional_Basalt_simplified","Wehrlite_simplified")
-
-#Saving each rock as different file 
-names(simplified_rocks) <- list_of_rocks
-output_directory <- file.path("~", "Desktop", "MSci Project", "RareEarthElements", "Simplified_Data")
-dir.create(path = output_directory,showWarnings = FALSE)
-for (rock_name in names(simplified_rocks))
-     {
-       saveas <- simplified_rocks[[rock_name]]
-       file_name <- paste0(rock_name,".csv")
-       saving_path <- file.path(output_directory,file_name)
-       write.csv(saveas,file = saving_path,row.names = FALSE)
-}
-```
+# ```{r}
+# 
+# #Saving each rock as different file 
+# output_directory <- file.path("~", "Desktop", "MSci Project", "RareEarthElements", "Simplified_Data")
+# dir.create(path = output_directory,showWarnings = FALSE)
+# for (rock_name in names(simplified_rocks))
+#      {
+#        saveas <- simplified_rocks[[rock_name]]
+#        file_name <- paste0(rock_name,".csv")
+#        saving_path <- file.path(output_directory,file_name)
+#        write.csv(saveas,file = saving_path,row.names = FALSE)
+# }
+# ```
 
 Removing bias for further study by taking random 100 samples 
+# ```{r}
+# set.seed(21)
+# simplified_rocks100 <- list()
+# for (rock_name100 in names(simplified_rocks))
+# {
+#   data_for_loop <- simplified_rocks[[rock_name100]]
+#   nrows <-nrow(data_for_loop)
+#   if (nrows >= 100)
+#   {
+#     random_rows <- sample(1:nrows,100,replace = FALSE)
+#     selected_random_rows <- data_for_loop[random_rows, ]
+#     simplified_rocks100[[rock_name100]] <- selected_random_rows
+#   }
+#   else
+#   {
+#     simplified_rocks100[[rock_name100]]<- data_for_loop
+#   }
+# }
+#   
+# ```
+
+
+<font size="5">***Code for Week 5: Further Simplification of Data & Save to Github ***</font>
+
 ```{r}
+output_directory <- file.path("~", "Desktop", "MSci Project", "RareEarthElements", "Simplified_Data")
+dir.create(path = output_directory,showWarnings = FALSE)
 set.seed(21)
-simplified_rocks100 <- list()
-for (rock_name100 in names(simplified_rocks))
+for(rock_name in names(simplified_rocks))
 {
-  data_for_loop <- simplified_rocks[[rock_name100]]
+  data_for_loop <- simplified_rocks[[rock_name]]
   nrows <-nrow(data_for_loop)
+  selected_data <- NULL
   if (nrows >= 100)
   {
     random_rows <- sample(1:nrows,100,replace = FALSE)
     selected_random_rows <- data_for_loop[random_rows, ]
-    simplified_rocks100[[rock_name100]] <- selected_random_rows
+    selected_data <- selected_random_rows
   }
   else
   {
-    simplified_rocks100[[rock_name100]]<- data_for_loop
+    selected_data<- data_for_loop
   }
+  # Averaging Lat and Lon 
+   avg_lat <- (selected_data$"LATITUDE MIN"+selected_data$"LATITUDE MAX")/2
+   avg_long <- (selected_data$"LONGITUDE MIN"+selected_data$"LONGITUDE MAX")/2
+   
+   removed_col <- c("LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX")
+   kept_col <- selected_data[, !colnames(selected_data) %in% removed_col]
+   
+   saveas <- cbind(kept_col,AVERAGE_LAT= avg_lat,AVERAGE_LON=avg_long)
+   file_name <- paste0(rock_name,".csv")
+   saving_path <- file.path(output_directory,file_name)
+   write.csv(saveas,file = saving_path,row.names = FALSE)
+   
 }
-  
 ```
+
+

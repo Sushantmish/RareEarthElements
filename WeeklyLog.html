@@ -446,7 +446,7 @@ ree_sample13 &lt;- as.numeric(rhyolite[20, 119:132])
 # taking reference values 
 ree_ref &lt;- as.numeric(ref[3:16, 14]) #column 4,5 dont work
 colors &lt;- c(&quot;black&quot;,&quot;red&quot;,&quot;yellow&quot;,&quot;lightblue&quot;,&quot;green&quot;,&quot;orange&quot;,&quot;pink&quot;,&quot;cyan&quot;,&quot;purple&quot;,&quot;brown&quot;,&quot;gold&quot;,&quot;violet&quot;,&quot;navy&quot;)
-rock_names &lt;- c(&quot;adakite&quot;,&quot;alkali_basalt&quot;,&quot;andesite&quot;,&quot;anakaramite&quot;,&quot;basalt&quot;,&quot;dolerite&quot;,&quot;gabbro&quot;,&quot;granite&quot;,&quot;hawaiite&quot;,&quot;kimberlite&quot;,&quot;peridotite&quot;,&quot;pyroxenite&quot;,&quot;rhyolite&quot;)</code></pre>
+rock_names_graph &lt;- c(&quot;adakite&quot;,&quot;alkali_basalt&quot;,&quot;andesite&quot;,&quot;anakaramite&quot;,&quot;basalt&quot;,&quot;dolerite&quot;,&quot;gabbro&quot;,&quot;granite&quot;,&quot;hawaiite&quot;,&quot;kimberlite&quot;,&quot;peridotite&quot;,&quot;pyroxenite&quot;,&quot;rhyolite&quot;)</code></pre>
 <p>Spider Plot Function</p>
 <pre class="r"><code>#this is a function for plotting spider plots for REE data
 plot_spider &lt;- function(samples,reference_values,logscale=TRUE,colors=NULL,main= &quot;Spider Plot for Normalised REE Values&quot;,xlab=&quot;Rare Earth Elements&quot;,ylab =&quot;Normalised values&quot;)
@@ -477,9 +477,9 @@ plot_spider &lt;- function(samples,reference_values,logscale=TRUE,colors=NULL,ma
          lines(1:length(reference_values),normalised_values[[i]],type=&quot;b&quot;,col=colors[i])
        }
    }
-   legend(&quot;right&quot;, legend = rock_names, col = colors[1:length(samples)], lty = 1, lwd = 2, bty = &quot;n&quot;)
-}
-samples &lt;- list(ree_sample1,ree_sample2,ree_sample3,ree_sample4,ree_sample5,ree_sample6,ree_sample7,ree_sample8,ree_sample9,ree_sample10,ree_sample11,ree_sample12,ree_sample13)
+   legend(&quot;right&quot;, legend = rock_names_graph, col = colors[1:length(samples)], lty = 1, lwd = 2, bty = &quot;n&quot;)
+}</code></pre>
+<pre class="r"><code>samples &lt;- list(ree_sample1,ree_sample2,ree_sample3,ree_sample4,ree_sample5,ree_sample6,ree_sample7,ree_sample8,ree_sample9,ree_sample10,ree_sample11,ree_sample12,ree_sample13)
 
 plot_spider(samples, ree_ref,main = &quot;REE Spider Diagram (Sample 19, Reference: m&amp;s )&quot;)</code></pre>
 <p><font size="5"><strong>Week 2 Reading Notes:</strong></font></p>
@@ -622,12 +622,12 @@ which seems like a very unreasonable value.</li>
 Function</em></strong></font></p>
 <pre class="r"><code>data_simplifying &lt;- function(input_data)
 {
-  REE_list &lt;- c(&quot;LA.PPM.&quot;,&quot;CE.PPM.&quot;,&quot;PR.PPM.&quot;,&quot;ND.PPM.&quot;,&quot;SM.PPM.&quot;,&quot;EU.PPM.&quot;,&quot;GD.PPM.&quot;,&quot;TB.PPM.&quot;,&quot;DY.PPM.&quot;,&quot;HO.PPM.&quot;,&quot;ER.PPM.&quot;,&quot;TM.PPM.&quot;,&quot;YB.PPM.&quot;,&quot;LU.PPM.&quot;)
+  REE_list &lt;- c(&quot;LATITUDE MIN&quot;,&quot;LONGITUDE MIN&quot;,&quot;LATITUDE MAX&quot;,&quot;LONGITUDE MAX&quot;,&quot;ROCK NAME&quot;,&quot;LA(PPM)&quot;,&quot;CE(PPM)&quot;,&quot;PR(PPM)&quot;,&quot;ND(PPM)&quot;,&quot;SM(PPM)&quot;,&quot;EU(PPM)&quot;,&quot;GD(PPM)&quot;,&quot;TB(PPM)&quot;,&quot;DY(PPM)&quot;,&quot;HO(PPM)&quot;,&quot;ER(PPM)&quot;,&quot;TM(PPM)&quot;,&quot;YB(PPM)&quot;,&quot;LU(PPM)&quot;)
   complete_row &lt;- complete.cases(input_data[, REE_list])
   refined_REE_data &lt;- input_data[complete_row,REE_list]
   
-} 
-simplified_adakite &lt;- data_simplifying(adakite)
+} </code></pre>
+<pre class="r"><code>simplified_adakite &lt;- data_simplifying(adakite)
 simplified_alkali_basalt &lt;- data_simplifying(alkali_basalt)
 simplified_andesite &lt;- data_simplifying(andesite)
 simplified_anakaramite &lt;- data_simplifying(ankaramite)
@@ -640,19 +640,18 @@ simplified_kimberlite &lt;- data_simplifying(kimberlite)
 simplified_peridotite &lt;- data_simplifying(peridotite)
 simplified_pyroxenite &lt;- data_simplifying(pyroxenite)
 simplified_rhyolite &lt;- data_simplifying(rhyolite)</code></pre>
-<p><font size="5"><strong><em>Code for Week 4: Name Extraction
-Function</em></strong></font></p>
-<pre class="r"><code>#this is a function for extracting proper name for data downloaded from GeoRoc
-
-extract_name &lt;- function(input_file)
-{
-  original_name &lt;- strsplit(input_file,&quot;_part&quot;,fixed=TRUE)[[1]][1]
-  extracted_name &lt;- strsplit(original_name,&quot;_JETOA_&quot;)[[1]][2]
-  return(extracted_name)
-}
- 
-files &lt;-list.files(path = &quot;~/Desktop/MSci Project/Original Data&quot;)
-new_names &lt;- sapply(basename(files),extract_name)</code></pre>
+<p><font size="5"><strong><em>Code for Week 4: Simplification of all
+data</em></strong></font></p>
+<pre class="r"><code>rock_files_csv &lt;- list.files(path=&quot;~/Desktop/MSci Project/Rock Files CSV&quot;,full.names = TRUE)
+rock_list_read &lt;- lapply(rock_files_csv,read.csv,check.names=FALSE)
+rock_files_names_extract &lt;- basename(rock_files_csv)
+rock_files_names &lt;- sub(&quot;.csv&quot;,&quot;&quot;,rock_files_names_extract)
+names(rock_list_read) &lt;- rock_files_names
+simplified_rocks &lt;- lapply(rock_list_read,data_simplifying)</code></pre>
+<p>Saving simplified data in new folder #
+<code>{r} #  # #Saving each rock as different file  # output_directory &lt;- file.path(&quot;~&quot;, &quot;Desktop&quot;, &quot;MSci Project&quot;, &quot;RareEarthElements&quot;, &quot;Simplified_Data&quot;) # dir.create(path = output_directory,showWarnings = FALSE) # for (rock_name in names(simplified_rocks)) #      { #        saveas &lt;- simplified_rocks[[rock_name]] #        file_name &lt;- paste0(rock_name,&quot;.csv&quot;) #        saving_path &lt;- file.path(output_directory,file_name) #        write.csv(saveas,file = saving_path,row.names = FALSE) # } #</code></p>
+<p>Removing bias for further study by taking random 100 samples #
+<code>{r} # set.seed(21) # simplified_rocks100 &lt;- list() # for (rock_name100 in names(simplified_rocks)) # { #   data_for_loop &lt;- simplified_rocks[[rock_name100]] #   nrows &lt;-nrow(data_for_loop) #   if (nrows &gt;= 100) #   { #     random_rows &lt;- sample(1:nrows,100,replace = FALSE) #     selected_random_rows &lt;- data_for_loop[random_rows, ] #     simplified_rocks100[[rock_name100]] &lt;- selected_random_rows #   } #   else #   { #     simplified_rocks100[[rock_name100]]&lt;- data_for_loop #   } # } #    #</code></p>
 
 
 
