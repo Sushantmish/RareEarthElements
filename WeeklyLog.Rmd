@@ -178,7 +178,7 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 ```{r,echo=TRUE,eval=TRUE}
 data_simplifying <- function(input_data)
 {
-  REE_list <- c("LOCATION","LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX","ROCK NAME","LA(PPM)","CE(PPM)","PR(PPM)","ND(PPM)","SM(PPM)","EU(PPM)","GD(PPM)","TB(PPM)","DY(PPM)","HO(PPM)","ER(PPM)","TM(PPM)","YB(PPM)","LU(PPM)")
+  REE_list <- c("LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX","ROCK NAME","LA(PPM)","CE(PPM)","PR(PPM)","ND(PPM)","SM(PPM)","EU(PPM)","GD(PPM)","TB(PPM)","DY(PPM)","HO(PPM)","ER(PPM)","TM(PPM)","YB(PPM)","LU(PPM)")
   complete_row <- complete.cases(input_data[, REE_list])
   refined_REE_data <- input_data[complete_row,REE_list]
   
@@ -308,7 +308,31 @@ saving_directory <- file.path(output_directory,"1_Combined_rock_data.csv")
 write.csv(combined_data,file = saving_directory,row.names = FALSE)
 ```
 
-
+Log-ratio Transformation
 ```{r}
+non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON")
+ree_data <- combined_data[, !colnames(combined_data) %in% non_ree_col]
+non_ree_data <- combined_data[,non_ree_col]
+
+log_ree_data <- log(ree_data)
+log_mean <-  apply(log_ree_data,1,mean)
+#ree_transformed <- matrix(data= NA,nrow=nrow(log_ree_data),ncol=ncol(log_ree_data))
+
+# for(i in 1:nrow(log_ree_data))
+# {
+#   row_ree_data <- log_ree_data[i,]
+#   row_ree_data_mean <- log_mean[i]
+#   ree_transformed[i,] <- row_ree_data - row_ree_data_mean
+# }
+
+ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
+
+
+```
+
+PCA
+```{r}
+pca <- prcomp(ree_transformed)
+biplot(pca)
 
 ```
