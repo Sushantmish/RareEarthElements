@@ -211,7 +211,13 @@ rock_list_read <- lapply(rock_files_csv,read.csv,check.names=FALSE)
 rock_files_names_extract <- basename(rock_files_csv)
 rock_files_names <- sub(".csv","",rock_files_names_extract)
 names(rock_list_read) <- rock_files_names
-simplified_rocks <- lapply(rock_list_read,data_simplifying)
+zero_containing_simplified_rocks <- lapply(rock_list_read,data_simplifying)
+non_zero <- function(input)
+{
+  keep_row <- rowSums(input==0,na.rm = TRUE)==0
+  return(input[keep_row, ])
+}
+simplified_rocks <- lapply(zero_containing_simplified_rocks,non_zero)
 ```
 
 Saving simplified data in new folder
@@ -299,12 +305,13 @@ for(rock_name in names(simplified_rocks))
 }
 ```
 
-<font size="5">***Code for Week 6***</font>
+<font size="5">***Code for Reading Week***</font>
 ```{r}
-smaller_files <- list.files(path= output_directory,pattern = ".csv$", full.names = TRUE)
+new_output_directory <- "Combined_Data_File"
+smaller_files <- list.files(path=output_directory,pattern = ".csv$", full.names = TRUE)
 combined_list <- lapply(smaller_files,read.csv)
 combined_data <- do.call(rbind,combined_list)
-saving_directory <- file.path(output_directory,"1_Combined_rock_data.csv")
+saving_directory <- file.path(new_output_directory,"Combined_rock_data.csv")
 write.csv(combined_data,file = saving_directory,row.names = FALSE)
 ```
 
@@ -330,9 +337,12 @@ ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
 
 ```
 
+
+
+<font size="5">***Code for Week 6***</font>
 PCA
 ```{r}
 pca <- prcomp(ree_transformed)
 biplot(pca)
-
+plot(pca)
 ```
