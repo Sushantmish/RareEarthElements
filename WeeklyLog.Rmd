@@ -296,11 +296,11 @@ for(rock_name in names(simplified_rocks))
    
    removed_col <- c("LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX")
    kept_col <- selected_data[, !colnames(selected_data) %in% removed_col]
-   
-   saveas <- cbind(kept_col,AVERAGE_LAT= avg_lat,AVERAGE_LON=avg_long)
+   kept_col$AVERAGE_LAT <- avg_lat
+   kept_col$AVERAGE_LON <- avg_long
    file_name <- paste0(rock_name,".csv")
    saving_path <- file.path(output_directory,file_name)
-   write.csv(saveas,file = saving_path,row.names = FALSE)
+   write.csv(kept_col,file = saving_path,row.names = FALSE)
    
 }
 ```
@@ -309,8 +309,9 @@ for(rock_name in names(simplified_rocks))
 ```{r}
 new_output_directory <- "Combined_Data_File"
 smaller_files <- list.files(path=output_directory,pattern = ".csv$", full.names = TRUE)
-combined_list <- lapply(smaller_files,read.csv)
+combined_list <- lapply(smaller_files,read.csv,encoding = "UTF-8")
 combined_data <- do.call(rbind,combined_list)
+combined_data$ROCK.NAME <- gsub(" *\\[.*?\\]", "", combined_data$ROCK.NAME, useBytes = TRUE)
 saving_directory <- file.path(new_output_directory,"Combined_rock_data.csv")
 write.csv(combined_data,file = saving_directory,row.names = FALSE)
 ```
@@ -343,6 +344,23 @@ ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
 PCA
 ```{r}
 pca <- prcomp(ree_transformed)
-biplot(pca)
+biplot(pca,xlabs=rep('',nrow(ree_transformed)))
 plot(pca)
 ```
+
+
+<font size="3">***Initial Interpretations of the Biplot***</font>
+
+1. There is good correlation amongst the LREEs.   
+2. There is good correlation amongst the HREEs.   
+3. Eu concentration is not related to LREEs and other HREEs but is more related to MREEs. It has the most isolated concentration.   
+4. Correlation among MREE end members is weak.   
+5. The significance of the Oddo Harkins Rule is not very prevelant in the biplot. In traditional Spider plots, it is easy to see that odd atomic numbered elements have lower concentration than even numbered which is not the case here.  
+6. Negatively correlated REE pairs: La and Dy, Ce and Dy, Pr and Dy, Nd and Ho, Sm and Lu, Yb and Sm
+7. Eu and Gd are better represented by PC2 while most other REEs are represented by PC1. 
+8. Gd, Sm and Tb are not well represented as compared to others due to their short arrow length 
+
+<font size="3">***Initial Interpretations of the Screeplot***</font>
+
+1. From the screeplot it is evident that PC1 is the most important Principal Component variable. Together with PC2, it covers xx% of the variance. 
+2. Beyond PC3, the variables do not explain the variance much and can be ignored. 
