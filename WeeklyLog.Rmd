@@ -321,7 +321,12 @@ Log-ratio Transformation
 non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON")
 ree_data <- combined_data[, !colnames(combined_data) %in% non_ree_col]
 non_ree_data <- combined_data[,non_ree_col]
-
+# making 'other'column
+total_ree_per_sample <- rowSums(ree_data)
+other_col <- pmax(0,1000000 - total_ree_per_sample)
+ree_data$Other <- other_col
+combined_data$Other <- other_col
+#log transformation
 log_ree_data <- log(ree_data)
 log_mean <-  apply(log_ree_data,1,mean)
 #ree_transformed <- matrix(data= NA,nrow=nrow(log_ree_data),ncol=ncol(log_ree_data))
@@ -341,9 +346,13 @@ ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
 
 
 <font size="5">***Code for Week 6***</font>
+
 PCA
 ```{r}
 pca <- prcomp(ree_transformed)
+current_names <- row.names(pca$rotation)
+clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
+row.names(pca$rotation) <- clean_names
 biplot(pca,xlabs=rep('',nrow(ree_transformed)))
 plot(pca)
 ```
@@ -364,3 +373,54 @@ plot(pca)
 
 1. From the screeplot it is evident that PC1 is the most important Principal Component variable. Together with PC2, it covers xx% of the variance. 
 2. Beyond PC3, the variables do not explain the variance much and can be ignored. 
+
+<font size="3">***Contribution of each PC in Screeplot 1***</font>
+```{r}
+# round((pca$sdev^2/sum(pca$sdev^2))*100)
+```
+PC 1: xx%
+PC 2: xx%
+PC 3: xx%
+PC 4: xx%
+PC 5- PC 8: xx% 
+Beyond PC 8: negligible
+
+
+<font size="5">***Code for Week 7***</font>
+
+PC vs Atomic Number Plots 
+```{r}
+
+PC_data <- pca$rotation
+for (i in 1:5)
+{
+  pc_number <- paste0("PC",i)
+  PC <- PC_data[,pc_number]
+  plot(PC,ylab = pc_number,xlab = "Rare Earth Elements",xaxt="n")
+  axis(side=1,at=1:length(PC),labels = clean_names,cex.axis=0.8)
+}
+
+```
+
+Biplot without Eu 
+
+```{r}
+remove_Eu <- "EU.PPM."
+ree_withou_Eu <- ree_transformed[, !names(ree_transformed) %in% remove_Eu]
+pca_no_Eu <- prcomp(ree_withou_Eu)
+biplot(pca_no_Eu,xlabs=rep('',nrow(ree_withou_Eu)))
+plot(pca_no_Eu)
+```
+
+<font size="3">***Contribution of each PC in Screeplot withou Eu***</font>
+```{r}
+#round((pca_no_Eu$sdev^2/sum(pca_no_Eu$sdev^2))*100)
+```
+PC 1: xx%
+PC 2: xx%
+PC 3: xx%
+PC 4: xx%
+PC 5- PC 8: xx% 
+Beyond PC 8: negligible
+
+
