@@ -321,14 +321,10 @@ Log-ratio Transformation
 non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON")
 ree_data <- combined_data[, !colnames(combined_data) %in% non_ree_col]
 non_ree_data <- combined_data[,non_ree_col]
-# making 'other'column
-total_ree_per_sample <- rowSums(ree_data)
-other_col <- pmax(0,1000000 - total_ree_per_sample)
-ree_data$Other <- other_col
-combined_data$Other <- other_col
+
 #log transformation
-log_ree_data <- log(ree_data)
-log_mean <-  apply(log_ree_data,1,mean)
+log_ree_data_no_other <- log(ree_data)
+log_mean_no_other <-  apply(log_ree_data_no_other,1,mean)
 #ree_transformed <- matrix(data= NA,nrow=nrow(log_ree_data),ncol=ncol(log_ree_data))
 
 # for(i in 1:nrow(log_ree_data))
@@ -338,7 +334,7 @@ log_mean <-  apply(log_ree_data,1,mean)
 #   ree_transformed[i,] <- row_ree_data - row_ree_data_mean
 # }
 
-ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
+ree_transformed_no_other <- sweep(log_ree_data_no_other,1,log_mean_no_other,FUN = "-")
 
 
 ```
@@ -349,12 +345,12 @@ ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
 
 PCA
 ```{r}
-pca <- prcomp(ree_transformed)
-current_names <- row.names(pca$rotation)
-clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
-row.names(pca$rotation) <- clean_names
-biplot(pca,xlabs=rep('',nrow(ree_transformed)))
-plot(pca)
+pca_no_other <- prcomp(ree_transformed_no_other)
+current_names_no_other <- row.names(pca_no_other$rotation)
+clean_names_no_other <- sub("\\.[A-Z]+\\.?$", "", current_names_no_other)
+row.names(pca_no_other$rotation) <- clean_names_no_other
+biplot(pca_no_other,xlabs=rep('',nrow(ree_transformed_no_other)),main="Biplot 1")
+plot(pca_no_other)
 ```
 
 
@@ -376,13 +372,13 @@ plot(pca)
 
 <font size="3">***Contribution of each PC in Screeplot 1***</font>
 ```{r}
-# round((pca$sdev^2/sum(pca$sdev^2))*100)
+#round((pca_no_other$sdev^2/sum(pca_no_other$sdev^2))*100)
 ```
-PC 1: xx%
-PC 2: xx%
-PC 3: xx%
-PC 4: xx%
-PC 5- PC 8: xx% 
+PC 1: 79%
+PC 2: 10%
+PC 3: 4%
+PC 4: 2%
+PC 5- PC 8: 1% 
 Beyond PC 8: negligible
 
 
@@ -391,13 +387,13 @@ Beyond PC 8: negligible
 PC vs Atomic Number Plots 
 ```{r}
 
-PC_data <- pca$rotation
+PC_data_no_other <- pca_no_other$rotation
 for (i in 1:5)
 {
-  pc_number <- paste0("PC",i)
-  PC <- PC_data[,pc_number]
-  plot(PC,ylab = pc_number,xlab = "Rare Earth Elements",xaxt="n")
-  axis(side=1,at=1:length(PC),labels = clean_names,cex.axis=0.8)
+  pc_number_no_other <- paste0("PC",i)
+  PC_no_other <- PC_data_no_other[,pc_number_no_other]
+  plot(PC_no_other,ylab = pc_number_no_other,xlab = "Rare Earth Elements",xaxt="n")
+  axis(side=1,at=1:length(PC_no_other),labels = clean_names_no_other,cex.axis=0.8)
 }
 
 ```
@@ -406,21 +402,163 @@ Biplot without Eu
 
 ```{r}
 remove_Eu <- "EU.PPM."
-ree_withou_Eu <- ree_transformed[, !names(ree_transformed) %in% remove_Eu]
-pca_no_Eu <- prcomp(ree_withou_Eu)
-biplot(pca_no_Eu,xlabs=rep('',nrow(ree_withou_Eu)))
-plot(pca_no_Eu)
+ree_without_Eu_no_other <- ree_transformed_no_other[, !names(ree_transformed_no_other) %in% remove_Eu]
+pca_no_Eu_no_other <- prcomp(ree_without_Eu_no_other)
+biplot(pca_no_Eu_no_other,xlabs=rep('',nrow(ree_without_Eu_no_other)),main="Biplot 2")
+plot(pca_no_Eu_no_other)
 ```
 
 <font size="3">***Contribution of each PC in Screeplot withou Eu***</font>
 ```{r}
+#round((pca_no_Eu_no_other$sdev^2/sum(pca_no_Eu_no_other$sdev^2))*100)
+```
+PC 1: 85%
+PC 2: 7%
+PC 3: 3%
+PC 4: 2%
+PC 5- PC 8: 1% 
+Beyond PC 8: negligible
+
+<font size="5">***Code for Week 8***</font>
+
+<font size="3">***Replotting bilpots with 'Other' column***</font>
+```{r}
+#making 'other'column
+total_ree_per_sample <- rowSums(ree_data)
+other_col <- pmax(0,1000000 - total_ree_per_sample)
+ree_data$Other <- other_col
+combined_data$Other <- other_col
+#log transformation
+log_ree_data <- log(ree_data)
+log_mean <-  apply(log_ree_data,1,mean)
+ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
+```
+
+```{r}
+pca <- prcomp(ree_transformed)
+current_names <- row.names(pca$rotation)
+clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
+row.names(pca$rotation) <- clean_names
+biplot(pca,xlabs=rep('',nrow(ree_transformed)),main= "Biplot 3")
+plot(pca)
+```
+
+<font size="3">***Contribution of each PC in Screeplot 3***</font>
+```{r}
+#round((pca$sdev^2/sum(pca$sdev^2))*100)
+```
+PC 1: 66%
+PC 2: 20%
+PC 3: 7%
+PC 4: 2%
+PC 5- PC 7: 1% 
+Beyond PC 7: negligible
+
+```{r}
+PC_data <- pca$rotation
+for (i in 1:5)
+{
+  pc_number <- paste0("PC",i)
+  PC <- PC_data[,pc_number]
+  plot(PC,ylab = pc_number,xlab = "Rare Earth Elements",xaxt="n")
+  axis(side=1,at=1:length(PC),labels = clean_names,cex.axis=0.8)
+}
+```
+
+```{r}
+remove_Eu <- "EU.PPM."
+ree_withou_Eu <- ree_transformed[, !names(ree_transformed) %in% remove_Eu]
+pca_no_Eu <- prcomp(ree_withou_Eu)
+biplot(pca_no_Eu,xlabs=rep('',nrow(ree_withou_Eu)),main="Biplot 4")
+plot(pca_no_Eu)
+```
+<font size="3">***Contribution of each PC in Screeplot 4 without Eu***</font>
+```{r}
 #round((pca_no_Eu$sdev^2/sum(pca_no_Eu$sdev^2))*100)
 ```
-PC 1: xx%
-PC 2: xx%
-PC 3: xx%
-PC 4: xx%
-PC 5- PC 8: xx% 
-Beyond PC 8: negligible
+PC 1: 69%
+PC 2: 21%
+PC 3: 5%
+PC 4: 2%
+PC 5- PC 7: 1% 
+Beyond PC 7: negligible
+
+<font size="3">***PC Plots with Atomic Number as label***</font>
+
+```{r}
+atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71,"Other")
+xcoordinate <- numeric(length(clean_names))
+other_coordinate <- which(clean_names=="Other")
+
+xcoordinate[clean_names != "Other"] <- atomic_number
+xcoordinate[other_coordinate] <- 73
+
+axis_ticks <- 57:71
+axis_labels <- as.character(axis_ticks)
+axis_labels[axis_ticks==61] <-"61"
+ticks <- c(axis_ticks, 73) 
+label <- c(axis_labels,"Other")
+
+for (i in 1:5)
+{
+  pc_number <- paste0("PC",i)
+  PC <- PC_data[,pc_number]
+  plot(xcoordinate,PC, ylab = pc_number,xlab = "Atomic Number",xaxt="n")
+  axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+}
+```
+
+<font size="3">***PC Plots with Ionic radius as label***</font>
+
+Ionic Radius values from Shannon-1976 
+```{r}
+ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
+xcoordinate <- numeric(length(clean_names))
+other_coordinate <- which(clean_names=="Other")
+
+xcoordinate[clean_names != "Other"] <- ionic_radius8
+xcoordinate[other_coordinate] <- 0.95
+
+axis_labels_ionic8 <- as.character(round(ionic_radius8, 3))
+ticks <- xcoordinate
+label <- c(axis_labels_ionic8,"Other")
+
+for (i in 1:5)
+{
+  pc_number <- paste0("PC",i)
+  PC <- PC_data[,pc_number]
+  par(las=2)
+  plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=8) ",xaxt="n")
+  axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+}
+```
+
+```{r}
+ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
+xcoordinate <- numeric(length(clean_names))
+other_coordinate <- which(clean_names=="Other")
+
+xcoordinate[clean_names != "Other"] <- ionic_radius6
+xcoordinate[other_coordinate] <- 0.85
+
+axis_labels_ionic6 <- as.character(round(ionic_radius6, 3))
+ticks <- xcoordinate
+label <- c(axis_labels_ionic6,"Other")
+
+for (i in 1:5)
+{
+  pc_number <- paste0("PC",i)
+  PC <- PC_data[,pc_number]
+  par(las=2)
+  plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=6) ",xaxt="n")
+  axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+}
+```
+
+<font size="3">***PC2 vs PC3 Biplot for Biplot 3 and 4***</font>
+```{r}
+biplot(pca,choices=c(2,3),xlabs=rep('',nrow(ree_transformed)))
+biplot(pca_no_Eu,choices=c(2,3),xlabs=rep('',nrow(ree_withou_Eu)))
+```
 
 
