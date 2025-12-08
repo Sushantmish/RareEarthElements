@@ -421,7 +421,7 @@ Beyond PC 8: negligible
 
 <font size="5">***Code for Week 8***</font>
 
-<font size="3">***Replotting bilpots with 'Other' column***</font>
+<font size="3">***Replotting biplots with 'Other' column***</font>
 ```{r}
 #making 'other'column
 total_ree_per_sample <- rowSums(ree_data)
@@ -560,129 +560,8 @@ for (i in 1:5)
 biplot(pca,choices=c(2,3),xlabs=rep('',nrow(ree_transformed)))
 biplot(pca_no_Eu,choices=c(2,3),xlabs=rep('',nrow(ree_withou_Eu)))
 ```
-
-<font size="5">***Code for Week 9***</font>
-
-```{r}
-atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71,"Other")
-ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
-ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
-
-pca_function <- function(input, use_Other= TRUE,no_EU = TRUE, pc_xaxis="Atomic Number")
-{
- filtered_data <- input
- plot_title <- 
-
- #EU filter
- if(no_EU)
- {
-  remove_Eu <- "EU.PPM."
-  filtered_data <- input[,!grepl(remove_Eu, names(input)),drop= FALSE]
-  plot_title <- " (without Eu)"
- }
- else
- {
-  filtered_data <- input
-   plot_title <- ""
- }
- 
- #Other Filter
- if (!use_Other) 
- {
-  filtered_data <- filtered_data[, !grepl("Other", names(filtered_data)),drop= FALSE]
-  plot_title <- paste0(plot_title, " (without Other)")
- }
- 
- #PCA
- pca_result <- prcomp(filtered_data)
- current_names <- row.names(pca_result$rotation)
- clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
- row.names(pca_result$rotation) <- clean_names
- 
- #Screeplot
- plot(pca_result,main=paste("Screeplot",plot_title))
- 
- #Biplots 
- biplot(pca_result,choices = c(1, 2),xlabs=rep('', nrow(filtered_data),main = paste("PC1 vs PC2", plot_title)))
- biplot(pca_result,choices = c(2, 3),xlabs=rep('', nrow(filtered_data),main = paste("PC1 vs PC2", plot_title)))
- 
- #PC Plots 
- 
- PC_data <- pca_result$rotation 
- 
- if (pc_xaxis== "Atomic Number")
- {
-  xcoordinate <- atomic_number
-  x_label <- "Atomic Number"
- 
-  if (use_Other)
-  {
-   x_coordinate <- c(x_coordinate, 73)
-   ticks <- c(atomic_number, 73)
-   label <- c(as.character(atomic_number), "Other")
-  } 
-  else 
-  {
-    ticks <- atomic_number
-    label <- as.character(atomic_number)
-  }
-  
- }
- 
-else if (pc_xaxis == "CN=8 Radius" || pc_xaxis == "CN=6 Radius")
-{
- 
- if (pc_xaxis == "CN=8 Radius") 
- {
-   xcoordinate <- ionic_radius8   # Fixed x_coordinate spelling
-   x_label <- "Ionic Radius (CN=8)"
-   other_coord <- 0.95 
- } 
- else 
- { 
-   xcoordinate <- ionic_radius6   # Fixed x_coordinate spelling
-   x_label <- "Ionic Radius (CN=6)"
-   other_coord <- 0.85 
- }
- 
- 
- if (use_Other) # Fixed capitalization: use_Other
- {
-   xcoordinate <- c(xcoordinate, other_coord) # Fixed x_coordinate spelling
-   ticks <- c(xcoordinate)
-   label <- c(as.character(round(xcoordinate[-length(xcoordinate)], 3)), "Other")
- } 
- else 
- {
-   ticks <- xcoordinate
-   label <- as.character(round(xcoordinate, 3))
- }
- 
-} 
- 
-else if (pc_xaxis == "None") 
-{
-  return(pca_result)
-}
- 
- for (i in 1:5)
- {
-  pc_number <- paste0("PC",i)
-  PC <- PC_data[,pc_number]
-  par(las=2)
-  plot(xcoordinate,PC, ylab = pc_number,xlab = x_label,main = paste(pc_number, "PC vs.", x_label,  plot_title),xaxt="n")
-  axis(side=1,at= ticks,labels= label,cex.axis=0.8)
- }
- return(pca_result)
-}
-```
+font size="5">***Code for Week 9***</font>
 
 ```{r}
-pca_result_test <- pca_function(pca,use_Other= TRUE,no_EU = TRUE, pc_xaxis="Atomic Number")
 
 ```
-
-
-
-
-
