@@ -563,5 +563,285 @@ biplot(pca_no_Eu,choices=c(2,3),xlabs=rep('',nrow(ree_withou_Eu)))
 font size="5">***Code for Week 9***</font>
 
 ```{r}
+plots_switch_case <- function(input) {
+
+  case_key <- as.character(input)
+
+  result <- switch(case_key,
+
+    "1" =
+    {
+      # Other + Eu
+      pca_other_eu <- prcomp(ree_transformed)
+      current_names <- row.names(pca$rotation)
+      clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
+      row.names(pca$rotation) <- clean_names
+      biplot(pca_other_eu,xlabs=rep('',nrow(ree_transformed)),main="Biplot PC1 vs PC2")
+      biplot(pca_other_eu,choices = c(2,3),xlabs=rep('',nrow(ree_transformed)),main="Biplot PC2 vs PC3")
+      plot(pca_other_eu)
+      
+      
+      atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71,"Other")
+      xcoordinate <- numeric(length(clean_names))
+      other_coordinate <- which(clean_names=="Other")
+      xcoordinate[clean_names != "Other"] <- atomic_number
+      xcoordinate[other_coordinate] <- 73
+      axis_ticks <- 57:71
+      axis_labels <- as.character(axis_ticks)
+      axis_labels[axis_ticks==61] <-"61"
+      ticks <- c(axis_ticks, 73) 
+      label <- c(axis_labels,"Other")
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[,pc_number]
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Atomic Number",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
+      xcoordinate <- numeric(length(clean_names))
+      other_coordinate <- which(clean_names=="Other")
+      xcoordinate[clean_names != "Other"] <- ionic_radius8
+      xcoordinate[other_coordinate] <- 0.95
+      axis_labels_ionic8 <- as.character(round(ionic_radius8, 3))
+      ticks <- xcoordinate
+      label <- c(axis_labels_ionic8,"Other")
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[,pc_number]
+        par(las=2)
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=8) ",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
+      xcoordinate <- numeric(length(clean_names))
+      other_coordinate <- which(clean_names=="Other")
+      xcoordinate[clean_names != "Other"] <- ionic_radius6
+      xcoordinate[other_coordinate] <- 0.85
+      axis_labels_ionic6 <- as.character(round(ionic_radius6, 3))
+      ticks <- xcoordinate
+      label <- c(axis_labels_ionic6,"Other")
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[,pc_number]
+        par(las=2)
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=6) ",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+
+    },
+
+    "2" = 
+    {
+    # No Other + Eu
+      pca_no_other <- prcomp(ree_transformed_no_other)
+      current_names_no_other <- row.names(pca_no_other$rotation)
+      clean_names_no_other <- sub("\\.[A-Z]+\\.?$", "", current_names_no_other)
+      row.names(pca_no_other$rotation) <- clean_names_no_other
+      biplot(pca_no_other,xlabs=rep('',nrow(ree_transformed_no_other)),main="Biplot PC1 vs PC2")
+      biplot(pca_no_other,choices = c(2,3),xlabs=rep('',nrow(ree_transformed_no_other)),main="Biplot PC2 vs PC3")
+      plot(pca_no_other)
+      
+      PC_data_no_other <- data.frame(pca_no_other$rotation)
+      
+      atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71)
+      xcoordinate <- atomic_number
+      axis_ticks <- 57:71
+      axis_labels <- as.character(axis_ticks)
+      axis_labels[axis_ticks==61] <-"61"
+      ticks <- axis_ticks
+      label <- axis_labels
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data_no_other[,pc_number]
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Atomic Number",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
+      xcoordinate <- ionic_radius8
+      axis_labels_ionic8 <- as.character(round(ionic_radius8, 3))
+      ticks <- xcoordinate
+      label <- axis_labels_ionic8
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data_no_other[,pc_number]
+        par(las=2)
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=8) ",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
+      xcoordinate <- ionic_radius6
+      axis_labels_ionic6 <- as.character(round(ionic_radius6, 3))
+      ticks <- xcoordinate
+      label <- axis_labels_ionic6
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data_no_other[,pc_number]
+        par(las=2)
+        plot(xcoordinate,PC, ylab = pc_number,xlab = "Ionic Radius (CN=6) ",xaxt="n")
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+}
+    },
+
+    "3" =
+    {
+      # Other + No Eu
+      pca_other_no_eu <- prcomp(ree_withou_Eu)
+      current_names_other_no_eu <- row.names(pca_other_no_eu$rotation)
+      clean_names_other_no_eu <- sub("\\.[A-Z]+\\.?$", "", current_names_other_no_eu)
+      row.names(pca_other_no_eu$rotation) <- clean_names_other_no_eu
+      biplot(pca_other_no_eu,xlabs=rep('',nrow(ree_withou_Eu)),main="Biplot PC1 vs PC2")
+      biplot(pca_other_no_eu,choices = c(2,3),xlabs=rep('',nrow(ree_withou_Eu)),main="Biplot PC2 vs PC3")
+      plot(pca_other_no_eu)
+      PC_data_other_no_eu <- data.frame(pca_other_no_eu$rotation)
+      
+      
+      atomic_number <- c(57,58,59,60,62,64,65,66,67,68,69,70,71)
+      xcoordinate <- numeric(length(clean_names_other_no_eu))
+      other_coordinate <- which(clean_names_other_no_eu=="Other")
+      xcoordinate[clean_names_other_no_eu != "Other"] <- atomic_number
+      xcoordinate[other_coordinate] <- 73
+      axis_ticks <- 57:71 
+      axis_labels <- as.character(axis_ticks)
+      axis_labels[axis_ticks==61] <-"61"
+      ticks <- c(axis_ticks, 73) 
+      label <- c(axis_labels,"Other")
+       
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_other_no_eu[,pc_number]
+          plot(xcoordinate,PC, ylab = pc_number,xlab = "Atomic Number",xaxt="n")
+          axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
+      ionic_radius8_plot <- ionic_radius8[c(1:5, 7:14)]
+      other <- 1.20
+      xcoordinate_ionic_radius <- numeric(length(clean_names_other_no_eu))
+      other_coordinate_index <- which(clean_names_other_no_eu == "Other")
+      xcoordinate_ionic_radius[clean_names_other_no_eu != "Other"] <- ionic_radius8_plot
+      xcoordinate_ionic_radius[other_coordinate_index] <- other
+      ticks<- c(ionic_radius8, other)
+      label <- c(sprintf("%.3f",ionic_radius8), "Other")
+      
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_other_no_eu[,pc_number]
+          par(las=2)
+          plot(xcoordinate_ionic_radius, PC, ylab = pc_number, xlab = "Ionic Radius (CN=8) ", xaxt="n")
+          axis(side=1, at= ticks, labels= label, cex.axis=0.8)
+      }
+      
+      
+      ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
+      ionic_radius6_plot <- ionic_radius6[c(1:5, 7:14)]
+      other <- 1.05
+      xcoordinate_ionic_radius <- numeric(length(clean_names_other_no_eu))
+      other_coordinate_index <- which(clean_names_other_no_eu == "Other")
+      xcoordinate_ionic_radius[clean_names_other_no_eu != "Other"] <- ionic_radius6_plot
+      xcoordinate_ionic_radius[other_coordinate_index] <- other
+      ticks<- c(ionic_radius6, other)
+      label <- c(sprintf("%.3f",ionic_radius6), "Other")
+      
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_other_no_eu[,pc_number]
+          par(las=2)
+          plot(xcoordinate_ionic_radius, PC, ylab = pc_number, xlab = "Ionic Radius (CN=6) ", xaxt="n")
+          axis(side=1, at= ticks, labels= label, cex.axis=0.8)
+      }
+
+    },
+
+    "4" = 
+    {
+      pca_no_eu_no_other <- prcomp(ree_without_Eu_no_other)
+      current_names_no_eu_no_other <- row.names(pca_no_eu_no_other$rotation)
+      clean_names_no_eu_no_other <- sub("\\.[A-Z]+\\.?$", "", current_names_no_eu_no_other)
+      row.names(pca_no_eu_no_other$rotation) <- clean_names_no_eu_no_other
+      num_ree <- nrow(ree_without_Eu_no_other)
+      biplot(pca_no_eu_no_other, xlabs=rep('', num_ree), main="Biplot PC1 vs PC2 ")
+      biplot(pca_no_eu_no_other, choices = c(2,3), xlabs=rep('', num_ree), main="Biplot PC2 vs PC3")
+      plot(pca_no_eu_no_other)
+      PC_data_no_eu_no_other <- data.frame(pca_no_eu_no_other$rotation)
+      
+      atomic_number <- c(57,58,59,60,62,64,65,66,67,68,69,70,71)
+      xcoordinate <- atomic_number
+      axis_ticks <- 57:71 
+      axis_labels <- as.character(axis_ticks)
+      axis_labels[axis_ticks == 61] <- "61"
+      axis_labels[axis_ticks == 63] <- "63"
+      ticks <- axis_ticks
+      label <- axis_labels
+      
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_no_eu_no_other[,pc_number] 
+          plot(xcoordinate, PC, ylab = pc_number, xlab = "Atomic Number", xaxt="n", xlim=c(56.5, 71.5))
+          axis(side=1, at= ticks, labels= label, cex.axis=0.8)
+      }
+      
+      ionic_radius8 <- c(1.160, 1.143, 1.126, 1.109, 1.079, 1.066, 1.053, 1.040, 1.027, 1.015, 1.004, 0.994, 0.985, 0.977)
+      xcoordinate_ionic_radius8 <- ionic_radius8[c(1:5, 7:14)] 
+      ticks <- ionic_radius8
+      label <- c(sprintf("%.3f", ionic_radius8))
+      
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_no_eu_no_other[,pc_number]
+          par(las=2)
+          plot(xcoordinate_ionic_radius8, PC, ylab = pc_number, xlab = "Ionic Radius (CN=8) ", xaxt="n", xlim=c(0.97, 1.17))
+          axis(side=1, at= ticks, labels= label, cex.axis=0.8)
+      }
+      
+      ionic_radius6 <- c(1.032, 1.010, 0.990, 0.983, 0.958, 0.947, 0.938, 0.923, 0.912, 0.901, 0.890, 0.880, 0.868, 0.861)
+      xcoordinate_ionic_radius6 <- ionic_radius6[c(1:5, 7:14)] 
+      ticks <- ionic_radius6
+      label <- c(sprintf("%.3f", ionic_radius6))
+      
+      for (i in 1:5)
+      {
+          pc_number <- paste0("PC",i)
+          PC <- PC_data_no_eu_no_other[,pc_number]
+          par(las=2)
+          plot(xcoordinate_ionic_radius6, PC, ylab = pc_number, xlab = "Ionic Radius (CN=6) ", xaxt="n", xlim=c(0.85, 1.05))
+          axis(side=1, at= ticks, labels= label, cex.axis=0.8)
+      }
+      
+      
+    },
+
+    {
+      stop(paste("Invalid case number specified:", input_number, ". Please use 1, 2, 3, or 4."))
+    }
+  )
+
+  return(result)
+}
+
+input_number <- readline(prompt = "Enter a number between 1 and 4:")
+
+case_number <- plots_switch_case(input_number)
+
+print(case_number)
+
 
 ```
