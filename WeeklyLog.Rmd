@@ -562,7 +562,7 @@ biplot(pca_no_Eu,choices=c(2,3),xlabs=rep('',nrow(ree_withou_Eu)))
 ```
 font size="5">***Code for Week 9***</font>
 
-```{r}
+```{r, eval=FALSE}
 plots_switch_case <- function(input) {
 
   case_key <- as.character(input)
@@ -837,7 +837,7 @@ plots_switch_case <- function(input) {
   return(result)
 }
 
-input_number <- readline(prompt = "Enter a number between 1 and 4:")
+input_number <- readline(prompt = "Enter a number: 1 for Other+Eu, 2 for No Other+Eu, 3 for Other+No Eu and 4 for No Other+ No Eu ")
 
 case_number <- plots_switch_case(input_number)
 
@@ -845,3 +845,77 @@ print(case_number)
 
 
 ```
+
+font size="5">***Christmas Break***</font>
+
+```{r}
+# Other + Eu
+      pca_other_eu <- prcomp(ree_transformed)
+      current_names <- row.names(pca_other_eu$rotation)
+      clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
+      row.names(pca_other_eu$rotation) <- clean_names
+      biplot(pca_other_eu,xlabs=rep('',nrow(ree_transformed)),main="Biplot PC1 vs PC2")
+      biplot(pca_other_eu,choices = c(2,3),xlabs=rep('',nrow(ree_transformed)),main="Biplot PC2 vs PC3")
+      plot(pca_other_eu)
+      
+      
+      atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71)
+      xcoordinate <- atomic_number
+      axis_ticks <- 57:71
+      axis_labels <- as.character(axis_ticks)
+      axis_labels[axis_ticks==61] <-"61"
+      ticks <- axis_ticks 
+      label <- axis_labels
+      element_symbol <- clean_names[clean_names != "Other"]
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[clean_names != "Other",pc_number]
+        point_colour_coding <- ifelse(xcoordinate %% 2 == 0, "blue","black")
+        plot(xcoordinate,PC,col=point_colour_coding, ylab = pc_number,xlab = "Atomic Number",xaxt="n")
+        text(xcoordinate,PC,labels = element_symbol, pos=4, col="red", cex=0.5)
+        legend("topleft",legend= c("Even","Odd"),col=c("blue","black"),pch=16,title="Atomic Number",bty="o",cex=0.5)
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
+      xcoordinate <- ionic_radius8
+      axis_labels_ionic8 <- as.character(round(ionic_radius8, 3))
+      ticks <- xcoordinate
+      label <- axis_labels_ionic8
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[clean_names != "Other",pc_number]
+        par(las=2)
+        point_colour_coding <- ifelse(atomic_number %% 2 == 0, "blue","black")
+        plot(xcoordinate,PC,col=point_colour_coding, ylab = pc_number,xlab = "Ionic Radius (CN=8) ",xaxt="n")
+        text(xcoordinate,PC,labels = element_symbol, pos=4, col="red", cex=0.5)
+        legend("topright",legend= c("Even","Odd"),col=c("blue","black"),pch=16,title="Atomic Number",bty="o",cex=0.5)
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+      
+      
+      ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
+      xcoordinate <- ionic_radius6
+      axis_labels_ionic6 <- as.character(round(ionic_radius6, 3))
+      ticks <- xcoordinate
+      label <- axis_labels_ionic6
+      for (i in 1:5)
+      {
+        pc_number <- paste0("PC",i)
+        PC <- PC_data[clean_names != "Other",pc_number]
+        par(las=2)
+        point_colour_coding <- ifelse(atomic_number %% 2 == 0, "blue","black")
+        plot(xcoordinate,PC, col=point_colour_coding,ylab = pc_number, xlab = "Ionic Radius (CN=6) ",xaxt="n")
+        text(xcoordinate,PC,labels = element_symbol, pos=4, col="red", cex=0.5)
+        legend("topright",legend= c("Even","Odd"),col=c("blue","black"),pch=16,title="Atomic Number",bty="o",cex=0.5)
+        axis(side=1,at= ticks,labels= label,cex.axis=0.8)
+      }
+```
+
+
+
+
+
