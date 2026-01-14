@@ -969,7 +969,7 @@ num_rocks <- 58
 num_PCs <- 15
 num_iterations <- 500
 
-mean_val_500 <- array(NA, dim = c(num_rocks, num_PCs, num_iterations))
+mean_val_500 <- array(NA, dim = c(num_rocks, num_PCs, num_iterations))3
 sd_val_500 <- array(NA, dim = c(num_rocks, num_PCs,num_iterations))
 PC_loadings_list <- list() 
 
@@ -1001,7 +1001,7 @@ for (i in 1:num_iterations)
   pca_500 <- prcomp(data_for_pca[row_num, ], scale. = TRUE)
   
   #should we compare with Eu specifically ? 
-  for (j in 1:n_pcs) 
+  for (j in 1:num_PCs) 
   {
     if (cor(pca_other_eu$rotation[,j], pca_500$rotation[,j]) < 0) 
     {
@@ -1020,27 +1020,27 @@ sd_low_lim <- apply(sd_val_500, c(1, 2), quantile, 0.025)
 sd_high_lim <- apply(sd_val_500, c(1, 2), quantile, 0.975)
 
 
-for (i in 1:15) 
+for (a in 1:num_PCs) 
 {
-  rock_mean <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, i], na.rm = TRUE))
+  rock_mean <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, a], na.rm = TRUE))
   par(mar = c(10, 4, 4, 2)) 
-  plot(rock_mean, xaxt = "n", col = "red",ylim = range(c(mean_low_lim[,i], mean_high_lim[,i])),
-       main = paste("Average PC", i), ylab = paste("Mean PC", i))
+  plot(rock_mean, xaxt = "n", col = "red",ylim = range(c(mean_low_lim[,a], mean_high_lim[,a])),
+       main = paste("Average PC", a), ylab = paste("Mean PC", a))
   
-  arrows(1:58, mean_low_lim[,i], 1:58, mean_high_lim[,i], length=0.03, angle=90, code=3)
-  axis(1, at = 1:58, labels = names(rock_mean), las = 2, cex.axis = 0.7)
+  arrows(1:num_rocks, mean_low_lim[,a], 1:num_rocks, mean_high_lim[,a], length=0.03, angle=90, code=3)
+  axis(1, at = 1:num_rocks, labels = names(rock_mean), las = 2, cex.axis = 0.7)
   grid()
 }
 
-for (i in 1:15) 
+for (b in 1:num_PCs) 
 {
-  rock_sd <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, i], na.rm = TRUE))
+  rock_sd <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, b], na.rm = TRUE))
   par(mar = c(10, 4, 4, 2)) 
-  plot(rock_sd, xaxt = "n", col = "blue",ylim = range(c(sd_low_lim[,i], sd_high_lim[,i])),
-       main = paste("Standard Deviation of PC", i), ylab = paste("SD of PC", i))
+  plot(rock_sd, xaxt = "n", col = "blue",ylim = range(c(sd_low_lim[,b], sd_high_lim[,b])),
+       main = paste("Standard Deviation of PC", b), ylab = paste("SD of PC", b))
   
-  arrows(1:58, sd_low_lim[,i], 1:58, sd_high_lim[,i], length=0.03, angle=90, code=3)
-  axis(1, at = 1:58, labels = names(rock_sd), las = 2, cex.axis = 0.7)
+  arrows(1:num_rocks, sd_low_lim[,b], 1:num_rocks, sd_high_lim[,b], length=0.03, angle=90, code=3)
+  axis(1, at = 1:num_rocks, labels = names(rock_sd), las = 2, cex.axis = 0.7)
   grid()
 }
 
