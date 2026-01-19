@@ -94,7 +94,7 @@ plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main=
   ymin <- if (logscale) min(unlist(normalised_values), na.rm = TRUE) else 0
   ymax <- max(unlist(normalised_values), na.rm = TRUE)
   # generate plot 
-  plot(1:length(reference_values),normalised_values[[1]],type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Concentration",log = 'y',ylim = c(ymin, ymax),col=colors[1])
+  plot(1:length(reference_values),normalised_values[[1]],main= "Spider Plot",type="b",xaxt="n",,xlab="Rare Earth Elements",ylab ="Concentration (PPM)",log = 'y',ylim = c(ymin, ymax),col=colors[1])
   axis(1,at=1:length(reference_values),labels = REE_symbols)
   grid(nx=NULL, ny=NULL,col="gray",lwd=1)
   
@@ -960,91 +960,165 @@ for (i in 1:15)
 }
 ```
 
-```{r}
-set.seed(1)
-data_for_pca <- combined_data[, sapply(combined_data, is.numeric)]
-pca_other_eu <- prcomp(data_for_pca,scale. = TRUE)
-
-num_rocks <- 58
-num_PCs <- 15
-num_iterations <- 500
-
-mean_val_500 <- array(NA, dim = c(num_rocks, num_PCs, num_iterations))3
-sd_val_500 <- array(NA, dim = c(num_rocks, num_PCs,num_iterations))
-PC_loadings_list <- list() 
-
-rock_row_ranges <- list(
-  "Adakite" = 1:100, "Alkali basalt" = 101:200, "Andesite" = 201:300, 
-  "Ankaramite" = 301:389, "Basalt" = 389:488, "Basaltic-andesite" = 489:588, 
-  "Basaltic-trachyandesite" = 589:688, "Basanite" = 689:788, "Benmorite" = 789:888, 
-  "Boninite" = 889:988, "Calc-alkali basalt" = 989:1088, "Carbonatite" = 1089:1188, 
-  "Comenditic Rhyolite" = 1189:1288, "Dacite" = 1289:1388, "Diorite" = 1389:1488, 
-  "Dolerite" = 1489:1588, "Dunite" = 1589:1688, "Foidite" = 1689:1788, 
-  "Gabbro" = 1789:1888, "Granite" = 1889:1988, "Granodiorite" = 1989:2088, 
-  "Harzburgite" = 2089:2188, "Hawaiite" = 2189:2288, "Kimberlite" = 2289:2388, 
-  "Komatiite" = 2389:2488, "Lamproite" = 2489:2588, "Lamprophyre" = 2589:2688, 
-  "Latite" = 2689:2788, "Leucitite" = 2789:2888, "Lherzolite" = 2889:2988, 
-  "Melilitite" = 2989:3088, "Mugearite" = 3089:3188, "Nephelinite" = 3189:3288, 
-  "Oceanite" = 3289:3314, "Ore" = 3315:3355, "Orthopyroxenite" = 3356:3455, 
-  "Pantelleritic Rhyolite" = 3456:3555, "Peridotite" = 3556:3655, "Phonolite" = 3656:3755, 
-  "Phonolitic-Tephrite" = 3756:3855, "Phoscorite" = 3856:3917, "Picrite" = 3918:4017, 
-  "Pyroxenite" = 4018:4117, "Rhyodacite" = 4118:4217, "Rhyolite" = 4218:4317, 
-  "Shoshonite" = 4318:4417, "Subalkali Basalt" = 4418:4517, "Tephrite" = 4518:4617, 
-  "Tephritic-Phonolite" = 4618:4717, "Tholeiitic Andesite" = 4718:4742, 
-  "Tholeiitic Basalt" = 4743:4842, "Tonalite" = 4843:4942, "Trachyandesite" = 4943:5042, 
-  "Trachybasalt" = 5043:5142, "Trachydacite" = 5143:5242, "Trachyte" = 5243:5342, 
-  "Transitional Basalt" = 5343:5442, "Wehrlite" = 5443:5542)
-
-for (i in 1:num_iterations) 
-{
-  row_num <- unlist(lapply(rock_row_ranges, function(row) sample(row, length(row), replace = TRUE)))
-  pca_500 <- prcomp(data_for_pca[row_num, ], scale. = TRUE)
-  
-  #should we compare with Eu specifically ? 
-  for (j in 1:num_PCs) 
-  {
-    if (cor(pca_other_eu$rotation[,j], pca_500$rotation[,j]) < 0) 
-    {
-      pca_500$x[,j] <- -pca_500$x[,j]
-    }
-    mean_val_500[, j, i] <- sapply(rock_row_ranges, function(row) mean(pca_500$x[row, j]))
-    sd_val_500[, j, i] <- sapply(rock_row_ranges, function(row) sd(pca_500$x[row, j]))
-  }
-  
-  PC_loadings_list[[i]] <- pca_500$rotation[, 1:num_PCs]
-}
-
-mean_low_lim <- apply(mean_val_500, c(1, 2), quantile, 0.025)
-mean_high_lim <- apply(mean_val_500, c(1, 2), quantile, 0.975)
-sd_low_lim <- apply(sd_val_500, c(1, 2), quantile, 0.025)
-sd_high_lim <- apply(sd_val_500, c(1, 2), quantile, 0.975)
-
-
-for (a in 1:num_PCs) 
-{
-  rock_mean <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, a], na.rm = TRUE))
-  par(mar = c(10, 4, 4, 2)) 
-  plot(rock_mean, xaxt = "n", col = "red",ylim = range(c(mean_low_lim[,a], mean_high_lim[,a])),
-       main = paste("Average PC", a), ylab = paste("Mean PC", a))
-  
-  arrows(1:num_rocks, mean_low_lim[,a], 1:num_rocks, mean_high_lim[,a], length=0.03, angle=90, code=3)
-  axis(1, at = 1:num_rocks, labels = names(rock_mean), las = 2, cex.axis = 0.7)
-  grid()
-}
-
-for (b in 1:num_PCs) 
-{
-  rock_sd <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, b], na.rm = TRUE))
-  par(mar = c(10, 4, 4, 2)) 
-  plot(rock_sd, xaxt = "n", col = "blue",ylim = range(c(sd_low_lim[,b], sd_high_lim[,b])),
-       main = paste("Standard Deviation of PC", b), ylab = paste("SD of PC", b))
-  
-  arrows(1:num_rocks, sd_low_lim[,b], 1:num_rocks, sd_high_lim[,b], length=0.03, angle=90, code=3)
-  axis(1, at = 1:num_rocks, labels = names(rock_sd), las = 2, cex.axis = 0.7)
-  grid()
-}
+```{r,eval=FALSE}
+# set.seed(1)
+# data_for_pca <- combined_data[, sapply(combined_data, is.numeric)]
+# pca_other_eu <- prcomp(data_for_pca,scale. = TRUE)
+# 
+# num_rocks <- 58
+# num_PCs <- 15
+# num_iterations <- 500
+# 
+# mean_val_500 <- array(NA, dim = c(num_rocks, num_PCs, num_iterations))
+# sd_val_500 <- array(NA, dim = c(num_rocks, num_PCs,num_iterations))
+# PC_loadings_list <- list() 
+# 
+# rock_row_ranges <- list(
+#   "Adakite" = 1:100, "Alkali basalt" = 101:200, "Andesite" = 201:300, 
+#   "Ankaramite" = 301:389, "Basalt" = 389:488, "Basaltic-andesite" = 489:588, 
+#   "Basaltic-trachyandesite" = 589:688, "Basanite" = 689:788, "Benmorite" = 789:888, 
+#   "Boninite" = 889:988, "Calc-alkali basalt" = 989:1088, "Carbonatite" = 1089:1188, 
+#   "Comenditic Rhyolite" = 1189:1288, "Dacite" = 1289:1388, "Diorite" = 1389:1488, 
+#   "Dolerite" = 1489:1588, "Dunite" = 1589:1688, "Foidite" = 1689:1788, 
+#   "Gabbro" = 1789:1888, "Granite" = 1889:1988, "Granodiorite" = 1989:2088, 
+#   "Harzburgite" = 2089:2188, "Hawaiite" = 2189:2288, "Kimberlite" = 2289:2388, 
+#   "Komatiite" = 2389:2488, "Lamproite" = 2489:2588, "Lamprophyre" = 2589:2688, 
+#   "Latite" = 2689:2788, "Leucitite" = 2789:2888, "Lherzolite" = 2889:2988, 
+#   "Melilitite" = 2989:3088, "Mugearite" = 3089:3188, "Nephelinite" = 3189:3288, 
+#   "Oceanite" = 3289:3314, "Ore" = 3315:3355, "Orthopyroxenite" = 3356:3455, 
+#   "Pantelleritic Rhyolite" = 3456:3555, "Peridotite" = 3556:3655, "Phonolite" = 3656:3755, 
+#   "Phonolitic-Tephrite" = 3756:3855, "Phoscorite" = 3856:3917, "Picrite" = 3918:4017, 
+#   "Pyroxenite" = 4018:4117, "Rhyodacite" = 4118:4217, "Rhyolite" = 4218:4317, 
+#   "Shoshonite" = 4318:4417, "Subalkali Basalt" = 4418:4517, "Tephrite" = 4518:4617, 
+#   "Tephritic-Phonolite" = 4618:4717, "Tholeiitic Andesite" = 4718:4742, 
+#   "Tholeiitic Basalt" = 4743:4842, "Tonalite" = 4843:4942, "Trachyandesite" = 4943:5042, 
+#   "Trachybasalt" = 5043:5142, "Trachydacite" = 5143:5242, "Trachyte" = 5243:5342, 
+#   "Transitional Basalt" = 5343:5442, "Wehrlite" = 5443:5542)
+# 
+# for (i in 1:num_iterations) 
+# {
+#   row_num <- unlist(lapply(rock_row_ranges, function(row) sample(row, length(row), replace = TRUE)))
+#   pca_500 <- prcomp(data_for_pca[row_num, ], scale. = TRUE)
+#   
+#   #should we compare with Eu specifically ? 
+#   for (j in 1:num_PCs) 
+#   {
+#     if (cor(pca_other_eu$rotation[,j], pca_500$rotation[,j]) < 0) 
+#     {
+#       pca_500$x[,j] <- -pca_500$x[,j]
+#     }
+#     mean_val_500[, j, i] <- sapply(rock_row_ranges, function(row) mean(pca_500$x[row, j]))
+#     sd_val_500[, j, i] <- sapply(rock_row_ranges, function(row) sd(pca_500$x[row, j]))
+#   }
+#   
+#   PC_loadings_list[[i]] <- pca_500$rotation[, 1:num_PCs]
+# }
+# 
+# mean_low_lim <- apply(mean_val_500, c(1, 2), quantile, 0.025)
+# mean_high_lim <- apply(mean_val_500, c(1, 2), quantile, 0.975)
+# sd_low_lim <- apply(sd_val_500, c(1, 2), quantile, 0.025)
+# sd_high_lim <- apply(sd_val_500, c(1, 2), quantile, 0.975)
+# 
+# 
+# for (a in 1:num_PCs) 
+# {
+#   rock_mean <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, a], na.rm = TRUE))
+#   par(mar = c(10, 4, 4, 2)) 
+#   plot(rock_mean, xaxt = "n", col = "red",ylim = range(c(mean_low_lim[,a], mean_high_lim[,a])),
+#        main = paste("Average PC", a), ylab = paste("Mean PC", a))
+#   
+#   arrows(1:num_rocks, mean_low_lim[,a], 1:num_rocks, mean_high_lim[,a], length=0.03, angle=90, code=3)
+#   axis(1, at = 1:num_rocks, labels = names(rock_mean), las = 2, cex.axis = 0.7)
+#   grid()
+# }
+# 
+# for (b in 1:num_PCs) 
+# {
+#   rock_sd <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, b], na.rm = TRUE))
+#   par(mar = c(10, 4, 4, 2)) 
+#   plot(rock_sd, xaxt = "n", col = "blue",ylim = range(c(sd_low_lim[,b], sd_high_lim[,b])),
+#        main = paste("Standard Deviation of PC", b), ylab = paste("SD of PC", b))
+#   
+#   arrows(1:num_rocks, sd_low_lim[,b], 1:num_rocks, sd_high_lim[,b], length=0.03, angle=90, code=3)
+#   axis(1, at = 1:num_rocks, labels = names(rock_sd), las = 2, cex.axis = 0.7)
+#   grid()
+# }
 
 ```
 
+```{r}
+rock_name_files <- list.files(output_directory, pattern = "\\.csv$", full.names = TRUE)
+rock_data_list <- lapply(rock_name_files, function(read) read.csv(read, fileEncoding = "latin1"))
+rock_names <- toupper(sub("\\.csv$", "", basename(files), ignore.case = TRUE))
+rock_rows <- unlist(lapply(rock_data_list, nrow))
+rock_row_ranges <- split(1:sum(rock_rows), rep(rock_names, times = rock_rows))
+num_rock_groups <- length(rock_row_ranges)
 
+for (i in 1:15) 
+{
+  rock_mean_PC <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, i], na.rm = TRUE))
+  rock_sd_PC   <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, i], na.rm = TRUE))
+  
+  sorted_indices <- order(rock_mean_PC)
+  sorted_means   <- rock_mean_PC[sorted_indices]
+  sorted_sds     <- rock_sd_PC[sorted_indices]
+  sorted_names   <- names(sorted_means) 
+  
+  par(mar = c(10, 4, 4, 2)) 
+  y_lims <- range(c(sorted_means - sorted_sds, sorted_means + sorted_sds), na.rm = TRUE)
+  
+  plot(sorted_means,xaxt = "n",main = paste("Average PC",i, "values with sd"),ylab = paste("Mean PC",i,"with sd"), col = "red",pch = 19, ylim = y_lims,xlim = c(1, num_groups), xlab = "")
 
+  arrows(1:num_groups, sorted_means - sorted_sds,1:num_groups, sorted_means + sorted_sds,code = 3, angle = 90, length = 0.05, col = "blue")
+  
+  axis(1,at = 1:num_groups,labels = sorted_names,las = 2,cex.axis = 0.5,gap.axis = -1)
+  grid()
+}
+```
+
+```{r}
+atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71)
+ionic_radius8 <- c(1.160, 1.143, 1.126, 1.109, 1.079, 1.066, 1.053, 1.040, 1.027, 1.015, 1.004, 0.994, 0.985, 0.977)
+ionic_radius6 <- c(1.032, 1.010, 0.990, 0.983, 0.958, 0.947, 0.938, 0.923, 0.912, 0.901, 0.890, 0.880, 0.868, 0.861)
+pca_list <- list()
+num_iterations <- 500
+clean_names <- sub("\\.[A-Z]+\\.?$", "", row.names(pca_other_eu$rotation))
+ree_indices <- which(clean_names != "Other")
+element_symbol <- clean_names_no_other
+
+for (i in 1:num_iterations) 
+{
+  samples <- ree_transformed_no_other[sample(nrow(ree_transformed_no_other), replace = TRUE), ]
+  pca_500_samples <- prcomp(samples)
+  pca_list[[i]] <- pca_500_samples$rotation[ree_indices, 1:5]
+}
+
+pca_array <- array(unlist(pca_list), dim = c(length(ree_indices), 5, num_iterations))
+pc_mean <- apply(pca_array, c(1, 2), mean)
+pc_sd <- apply(pca_array, c(1, 2), sd)
+x_axis_list <- list(atomic_number, ionic_radius8, ionic_radius6)
+x_axis_labels <- c("Atomic Number", "Ionic Radius (CN=8)", "Ionic Radius (CN=6)")
+
+par(mfrow = c(1, 1), mar = c(5, 4, 4, 2) + 0.1)
+
+for (graph_type in 1:3) 
+{
+  current_graph <- x_axis_list[[graph_type]]
+  label_name <- x_axis_labels[graph_type]
+  
+  for (pc_num in 1:5) 
+    {
+    y_mean <- pc_mean[, pc_num]
+    y_sd <- pc_sd[, pc_num]
+    point_colour_coding <- ifelse(atomic_number %% 2 == 0, "blue", "black")
+
+    plot(current_graph, y_mean, col = point_colour_coding, pch = 16,main = paste("Mean", label_name, "vs PC", pc_num),xlab = label_name, ylab = paste("Mean PC", pc_num),ylim = range(c(y_mean - y_sd,y_mean + y_sd)),xaxt = "n")
+    
+    arrows(x0 = current_graph, y0 = y_mean - y_sd,x1 = current_graph, y1= y_mean + y_sd,code = 3,angle = 90, length = 0.05, col = "darkgray")
+    
+    text(current_graph, y_mean, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
+    axis(side = 1, at = current_graph, labels = round(current_graph, 3), las = 2, cex.axis = 0.7)
+    legend("topright", legend = c("Even", "Odd"), col = c("blue", "black"),pch = 16, title = "Atomic Num", cex = 0.7)
+  }
+}
+```
