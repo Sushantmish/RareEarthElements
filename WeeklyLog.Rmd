@@ -178,7 +178,7 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 ```{r,echo=TRUE,eval=TRUE}
 data_simplifying <- function(input_data)
 {
-  REE_list <- c("LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX","ROCK NAME","LA(PPM)","CE(PPM)","PR(PPM)","ND(PPM)","SM(PPM)","EU(PPM)","GD(PPM)","TB(PPM)","DY(PPM)","HO(PPM)","ER(PPM)","TM(PPM)","YB(PPM)","LU(PPM)")
+  REE_list <- c("LATITUDE MIN","LONGITUDE MIN","LATITUDE MAX","LONGITUDE MAX","ROCK NAME","SIO2(WT%)","LA(PPM)","CE(PPM)","PR(PPM)","ND(PPM)","SM(PPM)","EU(PPM)","GD(PPM)","TB(PPM)","DY(PPM)","HO(PPM)","ER(PPM)","TM(PPM)","YB(PPM)","LU(PPM)")
   complete_row <- complete.cases(input_data[, REE_list])
   refined_REE_data <- input_data[complete_row,REE_list]
   
@@ -318,7 +318,7 @@ write.csv(combined_data,file = saving_directory,row.names = FALSE)
 
 Log-ratio Transformation
 ```{r}
-non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON")
+non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON","SIO2.WT..")
 ree_data <- combined_data[, !colnames(combined_data) %in% non_ree_col]
 non_ree_data <- combined_data[,non_ree_col]
 
@@ -514,7 +514,7 @@ Ionic Radius values from Shannon-1976
 ```{r}
 ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
 xcoordinate <- numeric(length(clean_names))
-other_coordinate <- which(clean_names=="Other")
+other_coordinate <- which(clean_names=="Other","")
 
 xcoordinate[clean_names != "Other"] <- ionic_radius8
 xcoordinate[other_coordinate] <- 0.95
@@ -914,8 +914,8 @@ font size="5">***Christmas Break***</font>
         axis(side=1,at= ticks,labels= label,cex.axis=0.8)
       }
 ```
-
-```{r}
+font size="5">***Week 11***</font>
+```{r,eval=FALSE}
 rock_row_ranges <- list(
   "Adakite" = 1:100, "Alkali basalt" = 101:200, "Andesite" = 201:300, 
   "Ankaramite" = 301:389, "Basalt" = 389:488, "Basaltic-andesite" = 489:588, 
@@ -1045,11 +1045,11 @@ for (i in 1:15)
 # }
 
 ```
-
+font size="5">***Week 12***</font>
 ```{r}
 rock_name_files <- list.files(output_directory, pattern = "\\.csv$", full.names = TRUE)
 rock_data_list <- lapply(rock_name_files, function(read) read.csv(read, fileEncoding = "latin1"))
-rock_names <- toupper(sub("\\.csv$", "", basename(files), ignore.case = TRUE))
+rock_names <- toupper(sub("\\.csv$", "", basename(rock_name_files), ignore.case = TRUE))
 rock_rows <- unlist(lapply(rock_data_list, nrow))
 rock_row_ranges <- split(1:sum(rock_rows), rep(rock_names, times = rock_rows))
 num_rock_groups <- length(rock_row_ranges)
@@ -1085,12 +1085,37 @@ num_iterations <- 500
 clean_names <- sub("\\.[A-Z]+\\.?$", "", row.names(pca_other_eu$rotation))
 ree_indices <- which(clean_names != "Other")
 element_symbol <- clean_names_no_other
+random_pca_indices <- sample(1:num_iterations, 4)
+flipped_examples <- list()
 
 for (i in 1:num_iterations) 
 {
   samples <- ree_transformed_no_other[sample(nrow(ree_transformed_no_other), replace = TRUE), ]
   pca_500_samples <- prcomp(samples)
-  pca_list[[i]] <- pca_500_samples$rotation[ree_indices, 1:5]
+  rotation <- pca_500_samples$rotation[ree_indices, 1:5]
+  if (i %in% random_pca_indices) 
+  {
+    flipped_examples[[as.character(i)]] <- rotation
+  }
+  # check that Lu loading on all principle components is +ve
+  flip <- ifelse(rotation["LU.PPM.",] < 0,-1,1)
+  rotation <- sweep(rotation,2,flip,"*")
+  pca_list[[i]] <- rotation
+  
+}
+
+for (pc_no in 1:4)
+{
+   # One big plot per PC with 4 subplots
+  par(mfrow = c(2, 2), mar = c(4, 4, 3, 1))
+  for (iteration in names(flipped_examples)) 
+  {
+    pc_val <- flipped_examples[[iteration]][, pc_no]
+    plot(atomic_number, pc_val, col = ifelse(atomic_number %% 2 == 0, "blue", "black"), 
+         pch = 16, main = paste("PC", pc_no, "Iteration", iteration), 
+         xlab = "Atomic Number", ylab = paste("Mean PC", pc_no))
+    text(atomic_number, pc_val, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
+  }
 }
 
 pca_array <- array(unlist(pca_list), dim = c(length(ree_indices), 5, num_iterations))
@@ -1114,11 +1139,47 @@ for (graph_type in 1:3)
 
     plot(current_graph, y_mean, col = point_colour_coding, pch = 16,main = paste("Mean", label_name, "vs PC", pc_num),xlab = label_name, ylab = paste("Mean PC", pc_num),ylim = range(c(y_mean - y_sd,y_mean + y_sd)),xaxt = "n")
     
-    arrows(x0 = current_graph, y0 = y_mean - y_sd,x1 = current_graph, y1= y_mean + y_sd,code = 3,angle = 90, length = 0.05, col = "darkgray")
+    arrows(x0 = current_graph, y0 = y_mean - y_sd,x1 = current_graph, y1= y_mean + y_sd,code = 3,angle = 90, length = 0.05, col = "darkorange")
     
     text(current_graph, y_mean, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
     axis(side = 1, at = current_graph, labels = round(current_graph, 3), las = 2, cex.axis = 0.7)
     legend("topright", legend = c("Even", "Odd"), col = c("blue", "black"),pch = 16, title = "Atomic Num", cex = 0.7)
   }
 }
+```
+font size="5">***Week 13***</font>
+
+```{r}
+silica_column_name <- "SIO2.WT.." 
+
+rock_silica_mean <- sapply(rock_row_ranges, function(row) mean(combined_data[row, silica_column_name], na.rm = TRUE))
+
+for (i in 1:15) 
+{
+  rock_mean_PC <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, i], na.rm = TRUE))
+  rock_sd_PC   <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, i], na.rm = TRUE))
+  
+  sorted_indices <- order(rock_mean_PC)
+  sorted_means   <- rock_mean_PC[sorted_indices]
+  sorted_sds     <- rock_sd_PC[sorted_indices]
+  sorted_names   <- names(sorted_means) 
+  sorted_silica  <- rock_silica_mean[sorted_indices]
+  
+  par(mar = c(10, 4, 4, 2)) 
+  y_lims <- range(c(sorted_means - sorted_sds, sorted_means + sorted_sds), na.rm = TRUE)
+  
+  plot(sorted_means, xaxt = "n",ylab = paste("Mean PC", i, "with sd"), col = "red", pch = 19, ylim = y_lims, xlim = c(1, num_rock_groups), xlab = "")
+
+  arrows(1:num_rock_groups, sorted_means - sorted_sds, 1:num_rock_groups,sorted_means + sorted_sds, code = 3, angle = 90, length = 0.05, col = "blue")
+
+  #rock name axis
+  axis(1, at = 1:num_rock_groups, labels = sorted_names, las = 2, cex.axis = 0.5, gap.axis = -1)
+  
+  #silica percentage axis
+  axis(side = 3, at = 1:num_rock_groups, labels = round(sorted_silica, 1),las = 2, cex.axis = 0.5, col.axis = "darkorange")
+  mtext("Average SiO2 (WT%)", side = 3, line = 3, cex = 0.8, col = "black")
+
+  grid()
+}
+
 ```
