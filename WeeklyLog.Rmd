@@ -1067,11 +1067,11 @@ for (i in 1:15)
   par(mar = c(10, 4, 4, 2)) 
   y_lims <- range(c(sorted_means - sorted_sds, sorted_means + sorted_sds), na.rm = TRUE)
   
-  plot(sorted_means,xaxt = "n",main = paste("Average PC",i, "values with sd"),ylab = paste("Mean PC",i,"with sd"), col = "red",pch = 19, ylim = y_lims,xlim = c(1, num_groups), xlab = "")
+  plot(sorted_means,xaxt = "n",main = paste("Average PC",i, "values with sd"),ylab = paste("Mean PC",i,"with sd"), col = "red",pch = 19, ylim = y_lims,xlim = c(1, num_rock_groups), xlab = "")
 
-  arrows(1:num_groups, sorted_means - sorted_sds,1:num_groups, sorted_means + sorted_sds,code = 3, angle = 90, length = 0.05, col = "blue")
+  arrows(1:num_rock_groups, sorted_means - sorted_sds,1:num_rock_groups, sorted_means + sorted_sds,code = 3, angle = 90, length = 0.05, col = "blue")
   
-  axis(1,at = 1:num_groups,labels = sorted_names,las = 2,cex.axis = 0.5,gap.axis = -1)
+  axis(1,at = 1:num_rock_groups,labels = sorted_names,las = 2,cex.axis = 0.5,gap.axis = -1)
   grid()
 }
 ```
