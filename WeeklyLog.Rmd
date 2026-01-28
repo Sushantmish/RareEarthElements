@@ -3,11 +3,15 @@ title: "Weekly Log"
 author: "Sushant"
 date: "2025-10-02"
 output:
-  html_document: default
+  html_document: 
+    toc: true
+    toc_float: true
+    toc_depth: 2
   pdf_document: default
 ---
 
-<font size="5">**Week 1 Reading Notes:**</font>   
+# Week 1
+## Reading Notes
 <font size="3">***Book: Using Geochemical Data (Rollinson and Pease)***</font>
 
 1. Normalising values can be chosen from 2 sets:      
@@ -37,7 +41,7 @@ In a Spider Diagram, we will be representing the log normalised concentrations o
 La-Lanthanum, Ce- Cerium, Pr- Praseodymium, Nd- Neodymium, Pm- Promethium, Sm- Samarium, Eu- Europium, Gd- Gadolinium,, Tb- Terbium, Dy- Dysprosium, Ho- Holmium, Er- Erbium, Tm- Thulium, Yb- Ytterbium, Lu- Lutetium 
 
 Data 
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=FALSE,eval=FALSE}
 # #downloading dataset
 # adakite <- read.csv(file = 'Data/ADAKITE.csv')
 # alkali_basalt <- read.csv(file = 'Data/ALKALI_BASALT.csv')
@@ -56,7 +60,7 @@ Data
 ```
 
 Samples
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=FALSE,eval=FALSE}
 # gathering REE data from sample
 # ree_sample1 <- as.numeric(adakite[19, 119:132]) 
 # ree_sample2 <- as.numeric(alkali_basalt[20, 119:132]) 
@@ -76,8 +80,7 @@ Samples
 #colors <- c("black","red","yellow","lightblue","green","orange","pink","cyan","purple","brown","gold","violet","navy")
 #rock_names_graph <- c("adakite","alkali_basalt","andesite","anakaramite","basalt","dolerite","gabbro","granite","hawaiite","kimberlite","peridotite","pyroxenite","rhyolite")
 ```
-
-Spider Plot Function
+## Spider Plot Function
 ```{r,echo=TRUE,eval=TRUE}
 #this is a function for plotting spider plots for REE data
 plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main= "Spider Plot for Normalised REE Values",xlab="Rare Earth Elements",ylab ="Normalised values")
@@ -112,13 +115,14 @@ plot_spider <- function(samples,reference_values,logscale=TRUE,colors=NULL,main=
 }
 ```
 
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=FALSE,eval=FALSE}
 #samples <- list(ree_sample1,ree_sample2,ree_sample3,ree_sample4,ree_sample5,ree_sample6,ree_sample7,ree_sample8,ree_sample9,ree_sample10,ree_sample11,ree_sample12,ree_sample13)
 
 #plot_spider(samples, ree_ref,main = "REE Spider Diagram (Sample 19, Reference: m&s )")
 ```
 
-<font size="5">**Week 2 Reading Notes:**</font>  
+# Week 2
+## Reading Notes
 
 <font size="3">***Research Paper- O'Neill(2016) :"The Smoothness and Shapes of Chondrite-normalized Rare Earth Element Patterns in Basalts"***</font>
 
@@ -162,8 +166,8 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 15. Eu is present in high concentrations in Ca-rich minerals like plagioclase and epidote. Eu anomaly needs to be at a certain level to be dominant for different λ values. Eu rich mineral could be found in anorthosites or epidosites. 
 16. If Y is removed from the Levison suffixes, more REE minerals can be discovered. 
 
-<font size="5">**Week 3 Notes**</font>  
-
+# Week 3
+## Notes 
 <font size="3">***Using AlambdaR website to understand effects to change in λ values on the shape of the Normalised Values vs REE radii***</font>
 
 *We have taken a negative Eu anomaly and positive Ce anomaly for all cases*
@@ -174,7 +178,8 @@ ii)Biotite, Monazite, Feldspar+Quartz decrease with increase in Z.
 4. **Changing λ3:** adds to the cruvature, concentration doesn't change much even if it. is changed from +1000 to -1000. However, the sinusodiality becomes prevelant if λ3 is a very big or small number. It is hard to predict as clearly as prevoius cases how λ3 affects concentration.    
 5. **Changing λ4:** when other λ are kept in a reasonable value range, λ4 produces a W-shape only when it is the order of 10^4 which seems like a very unreasonable value. 
 
-<font size="5">***Code for Week 3: Data Simplifying Function***</font>
+## Data Simplifying Function
+
 ```{r,echo=TRUE,eval=TRUE}
 data_simplifying <- function(input_data)
 {
@@ -186,7 +191,7 @@ data_simplifying <- function(input_data)
 
 ```
 
-```{r,echo=TRUE,eval=FALSE}
+```{r,echo=FALSE,eval=FALSE}
 # simplified_adakite <- data_simplifying(adakite)
 # simplified_alkali_basalt <- data_simplifying(alkali_basalt)
 # simplified_andesite <- data_simplifying(andesite)
@@ -203,9 +208,10 @@ data_simplifying <- function(input_data)
 
 ```
 
+# Week 4 
+## Simplification of all data
 
-<font size="5">***Code for Week 4: Simplification of all data***</font>
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 rock_files_csv <- list.files(path="~/Desktop/MSci Project/Rock Files CSV",full.names = TRUE)
 rock_list_read <- lapply(rock_files_csv,read.csv,check.names=FALSE)
 rock_files_names_extract <- basename(rock_files_csv)
@@ -221,7 +227,7 @@ simplified_rocks <- lapply(zero_containing_simplified_rocks,non_zero)
 ```
 
 Saving simplified data in new folder
-```{r}
+```{r,echo=FALSE,eval=FALSE}
 # 
 # #Saving each rock as different file 
 # output_directory <- file.path("~", "Desktop", "MSci Project", "RareEarthElements", "Simplified_Data")
@@ -236,7 +242,7 @@ Saving simplified data in new folder
 ```
 
 Removing bias for further study by taking random 100 samples 
-```{r}
+```{r,echo=FALSE,eval=FALSE}
 # set.seed(21)
 # simplified_rocks100 <- list()
 # for (rock_name100 in names(simplified_rocks))
@@ -257,10 +263,10 @@ Removing bias for further study by taking random 100 samples
 #   
 ```
 
+# Week 5 
+## Further Simplification of Data
 
-<font size="5">***Code for Week 5: Further Simplification of Data & Save to Github ***</font>
-
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 output_directory <- "Simplified_Data"
 dir.create(path = output_directory)
 set.seed(21)
@@ -305,8 +311,10 @@ for(rock_name in names(simplified_rocks))
 }
 ```
 
-<font size="5">***Code for Reading Week***</font>
-```{r}
+# Reading Week
+## Saving Combined Rock File
+
+```{r,echo=TRUE,eval=TRUE}
 new_output_directory <- "Combined_Data_File"
 smaller_files <- list.files(path=output_directory,pattern = ".csv$", full.names = TRUE)
 combined_list <- lapply(smaller_files,read.csv,encoding = "UTF-8")
@@ -316,8 +324,8 @@ saving_directory <- file.path(new_output_directory,"Combined_rock_data.csv")
 write.csv(combined_data,file = saving_directory,row.names = FALSE)
 ```
 
-Log-ratio Transformation
-```{r}
+## Log-ratio Transformation
+```{r,echo=TRUE,eval=TRUE}
 non_ree_col <- c("ROCK.NAME","AVERAGE_LAT","AVERAGE_LON","SIO2.WT..")
 ree_data <- combined_data[, !colnames(combined_data) %in% non_ree_col]
 non_ree_data <- combined_data[,non_ree_col]
@@ -340,11 +348,9 @@ ree_transformed_no_other <- sweep(log_ree_data_no_other,1,log_mean_no_other,FUN 
 ```
 
 
-
-<font size="5">***Code for Week 6***</font>
-
-PCA
-```{r}
+# Week 6
+## PCA
+```{r,echo=TRUE,eval=TRUE}
 pca_no_other <- prcomp(ree_transformed_no_other)
 current_names_no_other <- row.names(pca_no_other$rotation)
 clean_names_no_other <- sub("\\.[A-Z]+\\.?$", "", current_names_no_other)
@@ -354,7 +360,7 @@ plot(pca_no_other)
 ```
 
 
-<font size="3">***Initial Interpretations of the Biplot***</font>
+## Initial Interpretations of the Biplot
 
 1. There is good correlation amongst the LREEs.   
 2. There is good correlation amongst the HREEs.   
@@ -365,13 +371,13 @@ plot(pca_no_other)
 7. Eu and Gd are better represented by PC2 while most other REEs are represented by PC1. 
 8. Gd, Sm and Tb are not well represented as compared to others due to their short arrow length 
 
-<font size="3">***Initial Interpretations of the Screeplot***</font>
+## Initial Interpretations of the Screeplot
 
 1. From the screeplot it is evident that PC1 is the most important Principal Component variable. Together with PC2, it covers xx% of the variance. 
 2. Beyond PC3, the variables do not explain the variance much and can be ignored. 
 
-<font size="3">***Contribution of each PC in Screeplot 1***</font>
-```{r}
+## Contribution of each PC in Screeplot 1
+```{r,echo=TRUE,eval=FALSE}
 #round((pca_no_other$sdev^2/sum(pca_no_other$sdev^2))*100)
 ```
 PC 1: 79%
@@ -382,10 +388,9 @@ PC 5- PC 8: 1%
 Beyond PC 8: negligible
 
 
-<font size="5">***Code for Week 7***</font>
-
-PC vs Atomic Number Plots 
-```{r}
+# Week 7
+## PC vs Atomic Number Plots 
+```{r,echo=TRUE,eval=TRUE}
 
 PC_data_no_other <- pca_no_other$rotation
 for (i in 1:5)
@@ -398,9 +403,9 @@ for (i in 1:5)
 
 ```
 
-Biplot without Eu 
+## Biplot without Eu 
 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 remove_Eu <- "EU.PPM."
 ree_without_Eu_no_other <- ree_transformed_no_other[, !names(ree_transformed_no_other) %in% remove_Eu]
 pca_no_Eu_no_other <- prcomp(ree_without_Eu_no_other)
@@ -408,8 +413,8 @@ biplot(pca_no_Eu_no_other,xlabs=rep('',nrow(ree_without_Eu_no_other)),main="Bipl
 plot(pca_no_Eu_no_other)
 ```
 
-<font size="3">***Contribution of each PC in Screeplot withou Eu***</font>
-```{r}
+## Contribution of each PC in Screeplot without Eu
+```{r,echo=TRUE,eval=FALSE}
 #round((pca_no_Eu_no_other$sdev^2/sum(pca_no_Eu_no_other$sdev^2))*100)
 ```
 PC 1: 85%
@@ -419,10 +424,9 @@ PC 4: 2%
 PC 5- PC 8: 1% 
 Beyond PC 8: negligible
 
-<font size="5">***Code for Week 8***</font>
-
-<font size="3">***Replotting biplots with 'Other' column***</font>
-```{r}
+# Week 8
+## Replotting biplots with 'Other' column
+```{r,echo=TRUE,eval=TRUE}
 #making 'other'column
 total_ree_per_sample <- rowSums(ree_data)
 other_col <- pmax(0,1000000 - total_ree_per_sample)
@@ -434,7 +438,7 @@ log_mean <-  apply(log_ree_data,1,mean)
 ree_transformed <- sweep(log_ree_data,1,log_mean,FUN = "-")
 ```
 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 pca <- prcomp(ree_transformed)
 current_names <- row.names(pca$rotation)
 clean_names <- sub("\\.[A-Z]+\\.?$", "", current_names)
@@ -443,8 +447,8 @@ biplot(pca,xlabs=rep('',nrow(ree_transformed)),main= "Biplot 3")
 plot(pca)
 ```
 
-<font size="3">***Contribution of each PC in Screeplot 3***</font>
-```{r}
+## Contribution of each PC in Screeplot 3 
+```{r,echo=TRUE,eval=FALSE}
 #round((pca$sdev^2/sum(pca$sdev^2))*100)
 ```
 PC 1: 66%
@@ -453,8 +457,8 @@ PC 3: 7%
 PC 4: 2%
 PC 5- PC 7: 1% 
 Beyond PC 7: negligible
-
-```{r}
+## PC Plots with Other
+```{r,echo=TRUE,eval=TRUE}
 PC_data <- pca$rotation
 for (i in 1:5)
 {
@@ -465,15 +469,16 @@ for (i in 1:5)
 }
 ```
 
-```{r}
+## Biplot without Eu
+```{r,echo=TRUE,eval=TRUE}
 remove_Eu <- "EU.PPM."
 ree_withou_Eu <- ree_transformed[, !names(ree_transformed) %in% remove_Eu]
 pca_no_Eu <- prcomp(ree_withou_Eu)
 biplot(pca_no_Eu,xlabs=rep('',nrow(ree_withou_Eu)),main="Biplot 4")
 plot(pca_no_Eu)
 ```
-<font size="3">***Contribution of each PC in Screeplot 4 without Eu***</font>
-```{r}
+## Contribution of each PC in Screeplot 4 without Eu
+```{r,echo=TRUE,eval=FALSE}
 #round((pca_no_Eu$sdev^2/sum(pca_no_Eu$sdev^2))*100)
 ```
 PC 1: 69%
@@ -483,9 +488,9 @@ PC 4: 2%
 PC 5- PC 7: 1% 
 Beyond PC 7: negligible
 
-<font size="3">***PC Plots with Atomic Number as label***</font>
+## PC Plots with Atomic Number as label
 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71,"Other")
 xcoordinate <- numeric(length(clean_names))
 other_coordinate <- which(clean_names=="Other")
@@ -508,10 +513,10 @@ for (i in 1:5)
 }
 ```
 
-<font size="3">***PC Plots with Ionic radius as label***</font>
+## PC Plots with Ionic radius as label
 
 Ionic Radius values from Shannon-1976 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 ionic_radius8 <- c(1.160,1.143,1.126,1.109,1.079,1.066,1.053,1.040,1.027,1.015,1.004,0.994,0.985,0.977)
 xcoordinate <- numeric(length(clean_names))
 other_coordinate <- which(clean_names=="Other","")
@@ -533,7 +538,7 @@ for (i in 1:5)
 }
 ```
 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 ionic_radius6 <- c(1.032,1.010,0.990,0.983,0.958,0.947,0.938,0.923,0.912,0.901,0.890,0.880,0.868,0.861)
 xcoordinate <- numeric(length(clean_names))
 other_coordinate <- which(clean_names=="Other")
@@ -555,14 +560,16 @@ for (i in 1:5)
 }
 ```
 
-<font size="3">***PC2 vs PC3 Biplot for Biplot 3 and 4***</font>
-```{r}
+## PC2 vs PC3 Biplots 
+```{r,echo=TRUE,eval=TRUE}
 biplot(pca,choices=c(2,3),xlabs=rep('',nrow(ree_transformed)))
 biplot(pca_no_Eu,choices=c(2,3),xlabs=rep('',nrow(ree_withou_Eu)))
 ```
-font size="5">***Code for Week 9***</font>
 
-```{r, eval=FALSE}
+# Week 9
+## Switch Case 
+
+```{r,eval=FALSE}
 plots_switch_case <- function(input) {
 
   case_key <- as.character(input)
@@ -846,9 +853,9 @@ print(case_number)
 
 ```
 
-font size="5">***Christmas Break***</font>
+# Christmas Break
 
-```{r}
+```{r,echo=TRUE,eval=TRUE}
 # Other + Eu
       pca_other_eu <- prcomp(ree_transformed)
       current_names <- row.names(pca_other_eu$rotation)
@@ -914,8 +921,9 @@ font size="5">***Christmas Break***</font>
         axis(side=1,at= ticks,labels= label,cex.axis=0.8)
       }
 ```
-font size="5">***Week 11***</font>
-```{r,eval=FALSE}
+
+# Week 11
+```{r,echo=TRUE,eval=FALSE}
 rock_row_ranges <- list(
   "Adakite" = 1:100, "Alkali basalt" = 101:200, "Andesite" = 201:300, 
   "Ankaramite" = 301:389, "Basalt" = 389:488, "Basaltic-andesite" = 489:588, 
@@ -960,7 +968,7 @@ for (i in 1:15)
 }
 ```
 
-```{r,eval=FALSE}
+```{r,echo=TRUE,eval=FALSE}
 # set.seed(1)
 # data_for_pca <- combined_data[, sapply(combined_data, is.numeric)]
 # pca_other_eu <- prcomp(data_for_pca,scale. = TRUE)
@@ -1045,8 +1053,9 @@ for (i in 1:15)
 # }
 
 ```
-font size="5">***Week 12***</font>
-```{r}
+# Week 12
+## Rock Scatter Plot
+```{r,echo=TRUE,eval=TRUE}
 rock_name_files <- list.files(output_directory, pattern = "\\.csv$", full.names = TRUE)
 rock_data_list <- lapply(rock_name_files, function(read) read.csv(read, fileEncoding = "latin1"))
 rock_names <- toupper(sub("\\.csv$", "", basename(rock_name_files), ignore.case = TRUE))
@@ -1075,8 +1084,8 @@ for (i in 1:15)
   grid()
 }
 ```
-
-```{r}
+## Flipping Problem and PC Plots
+```{r,echo=TRUE,eval=TRUE}
 atomic_number <- c(57,58,59,60,62,63,64,65,66,67,68,69,70,71)
 ionic_radius8 <- c(1.160, 1.143, 1.126, 1.109, 1.079, 1.066, 1.053, 1.040, 1.027, 1.015, 1.004, 0.994, 0.985, 0.977)
 ionic_radius6 <- c(1.032, 1.010, 0.990, 0.983, 0.958, 0.947, 0.938, 0.923, 0.912, 0.901, 0.890, 0.880, 0.868, 0.861)
@@ -1147,9 +1156,11 @@ for (graph_type in 1:3)
   }
 }
 ```
-font size="5">***Week 13***</font>
 
-```{r}
+# Week 13
+## Scatter Plot vs Silica Unsorted
+
+```{r,echo=TRUE,eval=TRUE}
 silica_column_name <- "SIO2.WT.." 
 
 rock_silica_mean <- sapply(rock_row_ranges, function(row) mean(combined_data[row, silica_column_name], na.rm = TRUE))
@@ -1160,6 +1171,44 @@ for (i in 1:15)
   rock_sd_PC   <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, i], na.rm = TRUE))
   
   sorted_indices <- order(rock_mean_PC)
+  sorted_means   <- rock_mean_PC[sorted_indices]
+  sorted_sds     <- rock_sd_PC[sorted_indices]
+  sorted_names   <- names(sorted_means) 
+  sorted_silica  <- rock_silica_mean[sorted_indices]
+  
+  par(mar = c(10, 4, 4, 2)) 
+  y_lims <- range(c(sorted_means - sorted_sds, sorted_means + sorted_sds), na.rm = TRUE)
+  
+  plot(sorted_means, xaxt = "n",ylab = paste("Mean PC", i, "with sd"), col = "red", pch = 19, ylim = y_lims, xlim = c(1, num_rock_groups), xlab = "")
+
+  arrows(1:num_rock_groups, sorted_means - sorted_sds, 1:num_rock_groups,sorted_means + sorted_sds, code = 3, angle = 90, length = 0.05, col = "blue")
+
+  #rock name axis
+  axis(1, at = 1:num_rock_groups, labels = sorted_names, las = 2, cex.axis = 0.5, gap.axis = -1)
+  
+  #silica percentage axis
+  axis(side = 3, at = 1:num_rock_groups, labels = round(sorted_silica, 1),las = 2, cex.axis = 0.5, col.axis = "darkorange")
+  mtext("Average SiO2 (WT%)", side = 3, line = 3, cex = 0.8, col = "black")
+
+  grid()
+}
+
+```
+
+# Week 14 
+
+## Scatter Plot vs Silica Sorted
+```{r}
+silica_column_name <- "SIO2.WT.." 
+
+rock_silica_mean <- sapply(rock_row_ranges, function(row) mean(combined_data[row, silica_column_name], na.rm = TRUE))
+
+for (i in 1:15) 
+{
+  rock_mean_PC <- sapply(rock_row_ranges, function(row) mean(pca_other_eu$x[row, i], na.rm = TRUE))
+  rock_sd_PC   <- sapply(rock_row_ranges, function(row) sd(pca_other_eu$x[row, i], na.rm = TRUE))
+  
+  sorted_indices <- order(rock_silica_mean)
   sorted_means   <- rock_mean_PC[sorted_indices]
   sorted_sds     <- rock_sd_PC[sorted_indices]
   sorted_names   <- names(sorted_means) 
