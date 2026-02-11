@@ -2762,7 +2762,8 @@ vector_4 &lt;- standardize_vectors(v4_initial)
 
 combined_vectors &lt;- cbind(vector_1,vector_2,vector_3,vector_4)
 rownames(combined_vectors) &lt;- symbol_header
-colnames(combined_vectors) &lt;- c(&quot;Vector_1&quot;,&quot;Eu_Anomaly&quot;,&quot;Linear_LREEvsHREE&quot;,&quot;Quad_LREEvsHREE&quot;)</code></pre>
+colnames(combined_vectors) &lt;- c(&quot;Vector_1&quot;,&quot;Eu_Anomaly&quot;,&quot;Linear_LREEvsHREE&quot;,&quot;Quad_LREEvsHREE&quot;)
+#print(combined_vectors)</code></pre>
 </div>
 <div id="solving-vectors" class="section level2">
 <h2>Solving Vectors</h2>
@@ -2776,7 +2777,10 @@ colnames(combined_vectors) &lt;- c(&quot;Vector_1&quot;,&quot;Eu_Anomaly&quot;,&
 }
 
 solved_scores &lt;- x_solver(combined_vectors,ree_transformed)
-colnames(solved_scores) &lt;- c(&quot;Total_REE&quot;, &quot;Eu_Anomaly&quot;, &quot;Linear&quot;, &quot;Quad&quot;)</code></pre>
+colnames(solved_scores) &lt;- c(&quot;Total_REE&quot;, &quot;Eu_Anomaly&quot;, &quot;Linear&quot;, &quot;Quad&quot;)
+#print(solved_scores)
+reconstructed_data &lt;- as.matrix(solved_scores) %*% t(combined_vectors)
+residual_epsilon &lt;- reconstructed_data - as.matrix(ree_transformed)</code></pre>
 </div>
 </div>
 

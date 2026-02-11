@@ -1257,14 +1257,16 @@ standardize_vectors <- function(v)
 }
 # Vector 1
 # Other = 1, Eu=0, REE(x13)=0
-v1_initial <- c(rep(-1,14),1)
+v1_initial <- c(rep(-1,n-1),1)
 vector_1 <- standardize_vectors(v1_initial)
 
 # Vector 2
 # Other = 0, Eu=1, REE(x13)=0
 
-v2_initial <- rep(-1,n)
+v2_initial <- c(rep(0,n))
 v2_initial[symbol_header == "Eu"] <- 1
+v2_no_EU <- (symbol_header != "Eu" & symbol_header != "Other")
+v2_initial[v2_no_EU]<- -1/(n-2)
 vector_2 <- standardize_vectors(v2_initial)
 
 # Vector 3
@@ -1293,19 +1295,56 @@ colnames(combined_vectors) <- c("Vector_1","Eu_Anomaly","Linear_LREEvsHREE","Qua
 ## Solving Vectors
 
 ```{r}
-x_solver <- function(vectors,transformeddata)
+x_project <- function(vectors,transformeddata)
 {
   A <- as.matrix(vectors)
   B <- as.matrix(transformeddata)
-  
-  scores <- B %*% A %*% solve(t(A) %*% A)
+  scores <- B %*% A
   return(as.data.frame(scores))
 }
 
-solved_scores <- x_solver(combined_vectors,ree_transformed)
-colnames(solved_scores) <- c("Total_REE", "Eu_Anomaly", "Linear", "Quad")
-#print(solved_scores)
-reconstructed_data <- as.matrix(solved_scores) %*% t(combined_vectors)
+projected_scores <- x_project(combined_vectors,ree_transformed)
+colnames(projected_scores) <- c("Total_REE", "Eu_Anomaly", "Linear", "Quad")
+#print(projected_scores)
+reconstructed_data <- as.matrix(projected_scores) %*% MASS::ginv(combined_vectors)
 residual_epsilon <- reconstructed_data - as.matrix(ree_transformed)
 ```
 
+# Reading Week 2
+
+## Adding rock name col
+
+```{r}
+cleanest_rock_names <- as.character(non_ree_data$ROCK.NAME)
+cleanest_rock_names <- sapply(strsplit(cleanest_rock_names, "[/,]"), `[`, 1)
+cleanest_rock_names <- trimws(toupper(cleanest_rock_names))
+cleanest_rock_names <- gsub(" ", "_",cleanest_rock_names)                
+
+projected_scores$Rock_Type <- cleanest_rock_names
+clean_sorted_names <- gsub(" ", "_", trimws(toupper(sorted_names)))
+
+projected_scores_filtered <- projected_scores[projected_scores$Rock_Type %in% clean_sorted_names, ]
+
+rock_mean_scores <- aggregate(cbind(Total_REE, Eu_Anomaly, Linear, Quad) ~ Rock_Type,data = projected_scores_filtered,FUN = mean)
+```
+
+## Rock scatter Plots
+
+```{r}
+axes_pair <- list(c("Total_REE", "Eu_Anomaly"),c("Total_REE", "Linear"),c("Total_REE", "Quad"),c("Eu_Anomaly", "Linear"),c("Eu_Anomaly", "Quad"),c("Linear", "Quad"))
+
+for(i in 1:length(axes_pair)) 
+{
+  x_n <- axes_pair[[i]][1]
+  y_n <- axes_pair[[i]][2]
+  
+  x_val <- rock_mean_scores[[x_n]]
+  y_val <- rock_mean_scores[[y_n]]
+  
+  #x_limit <- 
+  #y_limit <- 
+  plot(x_val, y_val,xlab = x_n, ylab = y_n,main = paste(x_n, "vs", y_n),pch = 19, cex = 0.5)
+  text(x_val, y_val,labels = rock_mean_scores$Rock_Type,pos = 3, offset =0.1,cex = 0.5)
+}
+
+```
