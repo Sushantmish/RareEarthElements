@@ -1304,7 +1304,7 @@ x_project <- function(vectors,transformeddata)
 }
 
 projected_scores <- x_project(combined_vectors,ree_transformed)
-colnames(projected_scores) <- c("Total_REE", "Eu_Anomaly", "Linear", "Quad")
+colnames(projected_scores) <- c("Total_REE", "Eu_Anomaly", "Slope", "Quad")
 #print(projected_scores)
 reconstructed_data <- as.matrix(projected_scores) %*% MASS::ginv(combined_vectors)
 residual_epsilon <- reconstructed_data - as.matrix(ree_transformed)
@@ -1325,13 +1325,18 @@ clean_sorted_names <- gsub(" ", "_", trimws(toupper(sorted_names)))
 
 projected_scores_filtered <- projected_scores[projected_scores$Rock_Type %in% clean_sorted_names, ]
 
-rock_mean_scores <- aggregate(cbind(Total_REE, Eu_Anomaly, Linear, Quad) ~ Rock_Type,data = projected_scores_filtered,FUN = mean)
+rock_mean_scores <- aggregate(cbind(Total_REE, Eu_Anomaly, Slope, Quad) ~ Rock_Type,data = projected_scores_filtered,FUN = mean)
+rock_sd_scores <- aggregate(cbind(Total_REE, Eu_Anomaly, Slope, Quad) ~ Rock_Type, 
+                            data = projected_scores_filtered, FUN = sd)
+
 ```
 
 ## Rock scatter Plots
 
 ```{r}
-axes_pair <- list(c("Total_REE", "Eu_Anomaly"),c("Total_REE", "Linear"),c("Total_REE", "Quad"),c("Eu_Anomaly", "Linear"),c("Eu_Anomaly", "Quad"),c("Linear", "Quad"))
+axes_pair <- list(c("Total_REE", "Eu_Anomaly"),c("Total_REE", "Slope"),c("Total_REE", "Quad"),c("Eu_Anomaly", "Slope"),c("Eu_Anomaly", "Quad"),c("Slope", "Quad"))
+
+
 
 for(i in 1:length(axes_pair)) 
 {
@@ -1346,5 +1351,69 @@ for(i in 1:length(axes_pair))
   plot(x_val, y_val,xlab = x_n, ylab = y_n,main = paste(x_n, "vs", y_n),pch = 19, cex = 0.5)
   text(x_val, y_val,labels = rock_mean_scores$Rock_Type,pos = 3, offset =0.1,cex = 0.5)
 }
+
+```
+
+
+# Week 16
+
+## chosen rocks
+```{r}
+
+chosen_rocks <- data.frame(
+Rock_Type = 
+c(
+    "ADAKITE", "ALKALI_BASALT", "ANDESITE", "BASALT", "CARBONATITE", 
+    "DIORITE", "DOLERITE", "DUNITE", "GABBRO", "GRANITE", 
+    "HARZBURGITE", "KIMBERLITE", "KOMATIITE", "LAMPROPHYRE", "LATITE", 
+    "ORE", "ORTHOPYROXENITE", "PERIDOTITE", "PICRITE", "PYROXENITE", 
+    "RHYOLITE", "TRACHYTE", "TRANSITIONAL_BASALT", "WEHRLITE"),
+  Short_Name = c(
+    "Ada", "AlB", "And", "Bas", "Carb", 
+    "Dio", "Dol", "Dun", "Gab", "Grn", 
+    "Hzb", "Kim", "Kom", "Lmp", "Lat", 
+    "Ore", "Opx", "Per", "Pic", "Pxn", 
+    "Rhy", "Tra", "TBas", "Whr")
+)
+
+rock_mean_scores_filtered <- merge(rock_mean_scores, chosen_rocks, by = "Rock_Type")
+rock_sd_filtered <- merge(rock_sd_scores, chosen_rocks, by = "Rock_Type")
+```
+
+## plotting chosen rocks
+```{r}
+for(i in 1:length(axes_pair)) 
+{
+  x_n <- axes_pair[[i]][1]
+  y_n <- axes_pair[[i]][2]
+  
+  x_val <- rock_mean_scores_filtered[[x_n]]
+  y_val <- rock_mean_scores_filtered[[y_n]]
+  
+  x_sd <- rock_sd_filtered[[x_n]]
+  y_sd <- rock_sd_filtered[[y_n]]
+  
+  x_limit <- c(min(x_val - x_sd, na.rm=T), max(x_val + x_sd, na.rm=T))
+  y_limit <- c(min(y_val - y_sd, na.rm=T), max(y_val + y_sd, na.rm=T))
+  
+  plot(x_val, y_val,xlab = x_n, ylab = y_n,main = paste(x_n, "vs", y_n),pch = 19, cex = 0.5, xlim = x_limit, ylim = y_limit)
+  
+  #error bars
+  #vertical
+  arrows(x_val, y_val - y_sd, x_val, y_val + y_sd, length = 0.05, angle = 90, code = 3, col = "gray")
+  #horizontal
+  arrows(x_val - x_sd, y_val, x_val + x_sd, y_val, length = 0.05, angle = 90, code = 3, col = "gray")
+  
+  text(x_val, y_val,labels = rock_mean_scores_filtered$Short_Name,pos = 3, offset =0.1,cex = 0.5, col = "red")
+}
+
+```
+
+
+## epsilon plot
+```{r}
+plot(as.matrix(ree_transformed), reconstructed_data,xlab="True Values (ree_transformed)", ylab="Predicted Values (reconstructed)",main="Fit vs True Values", pch=19, cex=0.5, col=rgb(0,0,0,0.2))
+
+abline(0, 1, col="green", lwd=2, lty=2)
 
 ```
