@@ -1434,12 +1434,16 @@ projected_scores_chur <- as.data.frame(ree_minus_chur %*% combined_vectors)
 colnames(projected_scores_chur) <- c("Total_REE", "Eu_Anomaly", "Slope", "Quad")
 # make total_ree +ve 
 projected_scores_chur$Total_REE <- projected_scores_chur$Total_REE * -1
+
 projected_scores_chur$Rock_Type <- cleanest_rock_names
 projected_scores_chur_filtered <- projected_scores_chur[projected_scores_chur$Rock_Type %in% chosen_rocks$Rock_Type, ]
 
 # mean and sd
 rock_mean_chur <- aggregate(cbind(Total_REE, Eu_Anomaly, Slope, Quad) ~ Rock_Type, data = projected_scores_chur_filtered, FUN = mean)
 rock_sd_chur <- aggregate(cbind(Total_REE, Eu_Anomaly, Slope, Quad) ~ Rock_Type, data = projected_scores_chur_filtered, FUN = sd)
+
+plot_data_chur <- merge(rock_mean_chur, chosen_rocks, by = "Rock_Type")
+sd_data_chur <- merge(rock_sd_chur, chosen_rocks, by = "Rock_Type")
 
 # chur as origin (0,0)
 chur_ref <- data.frame(Rock_Type="CHUR", Total_REE=0, Eu_Anomaly=0, Slope=0, Quad=0, Short_Name="CHUR")
