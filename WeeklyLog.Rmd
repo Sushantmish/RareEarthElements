@@ -1258,7 +1258,7 @@ standardize_vectors <- function(v)
 # Vector 1
 # Other = 1, Eu=0, REE(x13)=0
 v1_initial <- c(rep(-1,n-1),1)
-vector_1 <- standardize_vectors(v1_initial)
+vector_1 <- standardize_vectors(v1_initial) * -1
 
 # Vector 2
 # Other = 0, Eu=1, REE(x13)=0
@@ -1433,7 +1433,7 @@ ree_minus_chur <- sweep(as.matrix(ree_transformed), 2, chur_clr, "-")
 projected_scores_chur <- as.data.frame(ree_minus_chur %*% combined_vectors)
 colnames(projected_scores_chur) <- c("Total_REE", "Eu_Anomaly", "Slope", "Quad")
 # make total_ree +ve 
-projected_scores_chur$Total_REE <- projected_scores_chur$Total_REE * -1
+projected_scores_chur$Total_REE <- projected_scores_chur$Total_REE 
 
 projected_scores_chur$Rock_Type <- cleanest_rock_names
 projected_scores_chur_filtered <- projected_scores_chur[projected_scores_chur$Rock_Type %in% chosen_rocks$Rock_Type, ]
@@ -1480,5 +1480,35 @@ suppressWarnings(arrows(x_val - x_sd, y_val, x_val + x_sd, y_val, length = 0.04,
 ## Chur residual 
 
 ```{r}
+reconstructed_data_chur <- as.matrix(projected_scores_chur[, 1:4]) %*% MASS::ginv(combined_vectors)
+
+plot(as.matrix(ree_minus_chur), reconstructed_data_chur,xlab="True Values (ree_minus_chur)", ylab="Predicted Values (reconstructed_data-chur)",main="Fit vs True Values", pch=19, cex=0.5, col=rgb(0,0,0,0.2))
+
+abline(0, 1, col="green", lwd=2, lty=2)
+
 ```
+
+# Week 18
+
+## Chur Residual PCA
+
+```{r}
+pca_chur_residual <- prcomp(as.matrix(ree_minus_chur[, 1:14]) - reconstructed_data_chur[, 1:14], scale. = TRUE)
+biplot(pca_chur_residual, xlabs = rep(".", nrow(pca_chur_residual$x)))
+```
+
+
+```{r}
+chur_residual_matrix <- as.matrix(ree_minus_chur[, 1:14]) - reconstructed_data_chur[, 1:14]
+
+par(mfrow = c(4, 4), mar = c(2, 2, 2, 1))
+invisible(sapply(1:14, function(i) hist(chur_residual_matrix[, i], main = colnames(chur_residual_matrix)[i],col = "blue", breaks = 30, xlab = "")))
+```
+
+
+
+
+
+
+
 
