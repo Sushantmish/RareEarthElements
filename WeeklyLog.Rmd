@@ -1463,7 +1463,7 @@ for(i in 1:length(axes_pair))
   x_limit <- range(c(x_val - x_sd, x_val + x_sd, 0), na.rm=T)
   y_limit <- range(c(y_val - y_sd, y_val + y_sd, 0), na.rm=T)
   
-  plot(x_val, y_val, xlab = paste(x_n, "(vs CHUR)"), ylab = paste(y_n, "(vs CHUR)"),main = paste(x_n, "vs", y_n, "Normalized to CHUR"),pch = 19, cex = 0.6, xlim = x_limit, ylim = y_limit,col = ifelse(plot_data_chur$Short_Name == "CHUR", "blue", "black"))
+  plot(x_val, y_val, xlab = paste(x_n, "(vs CHUR)"), ylab = paste(y_n, "(vs CHUR)"),main = paste(x_n, "vs", y_n, "Normalized to CHUR"),pch = 19, cex = 0.6, xlim = x_limit, ylim = y_limit,col = ifelse(plot_data_chur$Short_Name == "CHUR", "blue", "black"), asp=1)
   
   abline(h = 0, v = 0, lty = 3, col = "gray60")
   
@@ -1496,7 +1496,7 @@ abline(0, 1, col="green", lwd=2, lty=2)
 pca_chur_residual <- prcomp(as.matrix(ree_minus_chur[, 1:14]) - reconstructed_data_chur[, 1:14], scale. = TRUE)
 biplot(pca_chur_residual, xlabs = rep(".", nrow(pca_chur_residual$x)))
 ```
-
+PC1 : Odd ve even 
 
 ```{r}
 chur_residual_matrix <- as.matrix(ree_minus_chur[, 1:14]) - reconstructed_data_chur[, 1:14]
@@ -1505,7 +1505,95 @@ par(mfrow = c(4, 4), mar = c(2, 2, 2, 1))
 invisible(sapply(1:14, function(i) hist(chur_residual_matrix[, i], main = colnames(chur_residual_matrix)[i],col = "blue", breaks = 30, xlab = "")))
 ```
 
+# Week 19
 
+## CHUR residual scatter plots 
+
+
+```{r}
+point_col <- ifelse(atomic_number %% 2 == 0, "blue", "black")
+par(mar = c(6, 4, 4, 2))
+for (i in 1:3) 
+{
+  plot(x_axis_list[[i]], pca_chur_residual$rotation[,1], col = point_col, pch = 16, xlab = x_axis_labels[i], ylab = "Residual PC1 Loadings",main = paste("Residual PC1 vs", x_axis_labels[i]),xaxt = "n")
+  text(x_axis_list[[i]], pca_chur_residual$rotation[,1], labels = element_symbol, pos = 4, col = "red", cex = 0.7)
+  axis(side = 1, at = x_axis_list[[i]], labels = round(x_axis_list[[i]], 3), las = 2, cex.axis = 0.7)
+  abline(h = 0, lty = 2, col = "gray60")
+  legend("bottomright", legend = c("Even", "Odd"), col = c("blue", "black"), pch = 16, cex = 0.4)
+}
+
+```
+
+## More ref points
+
+```{r}
+ref_ree_list <- list(
+  CHUR_1= c(0.237,0.612,0.095,0.4670,0.1530,0.0580,0.2055,0.0374,0.2540,0.0566,0.1655,0.0255,0.17,0.0254), # avg CI Chondrite Sun and McDonough-1989
+  CHUR_2= c(0.2469,0.6321,0.0959,0.4864,0.1556,0.0599,0.2003,0.0378,0.2577,0.0554,0.1667,0.0261,0.1694,0.0256), # avg CI Chondrite Pourmand et al 2012
+  CHUR_3  = c(0.2530,0.6,0.0910,0.4640,0.1530,0.0586,0.2060,0.0375,0.2540,0.0566,0.166,0.0262,0.168,0.0246), # avg CI Chondrite Barrat et al 2012
+  CHUR_4 = c(0.3670,0.9570,0.1370,0.711,0.231,0.087,0.306,0.058,0.381,0.0851,0.2490,0.0356,0.248,0.0381), # CI Chondrite volatile free Taylor and Mclennan 2009
+  CHUR_5 = c(0.3191,0.8201,0.1211,0.6151,0.2,0.0761,0.2673,0.0494,0.33,0.756,0.216,0.0329,0.2209,0.033), # CI Chondrite volatile free korotev 1996
+  NASC = c(32,73,7.9,33,5.7,1.24,5.2,0.85,5.8,1.04,3.4,0.5,3.1,0.48),# Mclennan 1989
+  UCC = c(31,63,7.1,27,4.7,1,4,0.7,3.9,0.83,2.3,0.3,2,0.31) # rudnick and gao 2014
+)
+
+ref_matrix <- do.call(rbind, ref_ree_list)
+ref_matrix_all <- cbind(ref_matrix, 1e6 - rowSums(ref_matrix))
+
+#  CLR and Normalize to original CHUR
+ref_clr_mat <- log(ref_matrix_all / exp(rowMeans(log(ref_matrix_all))))
+ref_shifted <- sweep(ref_clr_mat, 2, chur_clr, "-") # chur_clr is your origin
+
+ref_coords <- as.data.frame(ref_shifted %*% combined_vectors)
+colnames(ref_coords) <- c("Total_REE", "Eu_Anomaly", "Slope", "Quad")
+ref_coords$Short_Name <- names(ref_ree_list)
+
+#Merge the new references
+
+ref_coords$Rock_Type <- ref_coords$Short_Name 
+plot_data_chur <- rbind(plot_data_chur, ref_coords)
+
+#no sd in ref points
+ref_sd_null <- ref_coords
+ref_sd_null[, 1:4] <- 0
+sd_data_chur <- rbind(sd_data_chur, ref_sd_null)
+
+#point names
+all_refs <- c("CHUR", names(ref_ree_list))
+
+#updated loop
+for(i in 1:length(axes_pair)) 
+{
+  x_n <- axes_pair[[i]][1]
+  y_n <- axes_pair[[i]][2]
+  
+  x_val <- plot_data_chur[[x_n]]
+  y_val <- plot_data_chur[[y_n]]
+  x_sd  <- sd_data_chur[[x_n]]
+  y_sd  <- sd_data_chur[[y_n]]
+  
+  x_limit <- range(c(x_val - x_sd, x_val + x_sd, 0), na.rm=T)
+  y_limit <- range(c(y_val - y_sd, y_val + y_sd, 0), na.rm=T)
+  
+  # makes ref points blue
+  plot(x_val, y_val, 
+       xlab = paste(x_n, "(vs CHUR)"), ylab = paste(y_n, "(vs CHUR)"),
+       main = paste(x_n, "vs", y_n, "Normalized to CHUR"),
+       pch = 19, cex = 0.6, xlim = x_limit, ylim = y_limit,
+       col = ifelse(plot_data_chur$Short_Name %in% all_refs, "blue", "black"), 
+       asp=1)
+  
+  abline(h = 0, v = 0, lty = 3, col = "gray60")
+  
+  
+  suppressWarnings(arrows(x_val, y_val - y_sd, x_val, y_val + y_sd, length = 0.04, angle = 90, code = 3, col = "gray70"))
+  suppressWarnings(arrows(x_val - x_sd, y_val, x_val + x_sd, y_val, length = 0.04, angle = 90, code = 3, col = "gray70"))
+  
+  text(x_val, y_val, labels = plot_data_chur$Short_Name, pos = 3, offset = 0.2, cex = 0.6, 
+       col = ifelse(plot_data_chur$Short_Name %in% all_refs, "blue", "red"))
+}
+
+```
 
 
 
