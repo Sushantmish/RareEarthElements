@@ -1598,7 +1598,6 @@ for(i in 1:length(axes_pair))
 ```
 
 ```{r}
-
 spider_samples <- list(ree_data[249,1:14],ree_data[434,1:14],ree_data[1158,1:14],ree_data[1973,1:14],ree_data[3616,1:14],ree_data[4278,1:14])
 spider_ref <- c(0.237,0.612,0.095,0.4670,0.1530,0.0580,0.2055,0.0374,0.2540,0.0566,0.1655,0.0255,0.17,0.0254)
 rock_names_graph <- c("Andesite","Basalt","Carbonatite","Granite","Peridotite","Rhyolite")
@@ -1608,23 +1607,246 @@ plot_spider(spider_samples,spider_ref)
 ```
 
 ```{r}
-# 1. Create the plot but suppress the X axis (xaxt = "n")
+
 plot(1:14, as.numeric(ree_data[1, 1:14]), 
-     type = "b",          # Connects points with lines
-     pch = 19,            # Solid circles
+     type = "b",        
+     pch = 19,            
      col = "black", 
      main = "REE Concentration in Adakite Sample",
-     xlab = "Rare Earth Elements",   # Overall title for X axis
+     xlab = "Rare Earth Elements",   
      ylab = "Concentration (PPM)",
-     xaxt = "n")          # "n" tells R not to draw the X axis yet
+     xaxt = "n")         
 
-# 2. Add the custom labels (clean_names_no_other) to the X axis
-axis(side = 1,            # 1 = bottom axis
-     at = 1:14,           # Where to put the labels
-     labels = clean_names_no_other, # The actual element names
-     las = 1,             # Optional: makes labels vertical if they overlap
-     cex.axis = 0.8)      # Optional: slightly smaller text if names are crowded
+
+axis(side = 1,            
+     at = 1:14,           
+     labels = clean_names_no_other, 
+     las = 1,          
+     cex.axis = 0.8)      
+```
+## Appendix Table
+```{r}
+valid_58_rocks <- unique(rock_mean_scores$Rock_Type)
+
+
+ree_minus_chur_all <- sweep(as.matrix(ree_transformed), 2, chur_clr, "-")
+projected_df_all <- as.data.frame(ree_minus_chur_all %*% combined_vectors)
+colnames(projected_df_all) <- c("Total_REE", "Eu_Anomaly", "Slope", "Quad")
+
+projected_df_all$Rock_Type <- cleanest_rock_names
+
+projected_filtered <- projected_df_all[projected_df_all$Rock_Type %in% valid_58_rocks, ]
+
+
+rock_mean_scores_all <- aggregate(cbind(Total_REE, Eu_Anomaly, Slope, Quad) ~ Rock_Type,data = projected_filtered, FUN = mean)
+
+
+
+
 ```
 
+## Image Saving
 
+```{r}
+
+image_save_dir <- "~/Desktop/MSci Project/Thesis/ImagesPDF"
+
+#adakiteraw sample
+pdf(file.path(image_save_dir, "adakiteraw.pdf"), width = 6, height = 4.5, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+plot(1:14, as.numeric(ree_data[1, 1:14]), type = "b",pch = 19,col = "black",main = "REE Concentration in Adakite Sample",xlab = "Rare Earth Elements",ylab = "Concentration (PPM)", xaxt = "n")         
+axis(side = 1,at = 1:14,labels = clean_names_no_other,las = 1,cex.axis = 0.8) 
+invisible(dev.off())
+
+#multiple rocks
+pdf(file.path(image_save_dir, "multisamplespider.pdf"), width = 6, height = 4.5, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+spider_samples <- list(ree_data[249,1:14], ree_data[434,1:14], ree_data[1158,1:14], 
+                       ree_data[1973,1:14], ree_data[3616,1:14], ree_data[4278,1:14])
+spider_ref <- c(0.237, 0.612, 0.095, 0.4670, 0.1530, 0.0580, 0.2055, 0.0374, 
+                0.2540, 0.0566, 0.1655, 0.0255, 0.17, 0.0254)
+rock_names_graph <- c("Andesite","Basalt","Carbonatite","Granite","Peridotite","Rhyolite")
+plot_spider(spider_samples, spider_ref)
+legend("bottomleft", legend = rock_names_graph, col = 1:6, lty = 1, bty = "n", cex = 0.8)
+invisible(dev.off())
+
+#biplot1
+pdf(file.path(image_save_dir, "REE_Biplot.pdf"), width = 6, height = 6, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+biplot(pca_no_other, xlabs = rep('', nrow(ree_transformed_no_other)),main="")
+invisible(dev.off())
+
+#screeplot1
+pdf(file.path(image_save_dir, "REE_ScreePlot.pdf"), width = 5, height = 4, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+plot(pca_no_other, main = "")
+invisible(dev.off())
+
+#biplot2
+pdf(file.path(image_save_dir, "biplot2_pc1vspc2.pdf"), width = 6, height = 6, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+biplot(pca, xlabs = rep('', nrow(ree_transformed_no_other)),main="")
+invisible(dev.off())
+
+#biplot3
+pdf(file.path(image_save_dir, "biplot3_pc2vspc3.pdf"), width = 6, height = 6, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+biplot(pca_other_eu, choices = c(2, 3), xlabs = rep('', nrow(ree_transformed)), main = "")
+invisible(dev.off())
+
+#Scree2
+pdf(file.path(image_save_dir, "Scree2.pdf"), width = 5, height = 4, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+plot(pca_other_eu, main = "")
+invisible(dev.off())
+
+
+#scatterplots
+for (pc_num in 1:5) 
+  {
+  # Atomic Number Plots
+  pdf(file.path(image_save_dir, paste0("atomic", pc_num, ".pdf")), width = 6, height = 4.5, pointsize = 11)
+  par(mar = c(5, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+  y_mean <- pc_mean[, pc_num]; y_sd <- pc_sd[, pc_num]
+  plot(atomic_number, y_mean, col = ifelse(atomic_number %% 2 == 0, "blue", "black"), pch = 16, main = paste("Atomic Number vs PC", pc_num), xlab = "Atomic Number", ylab = paste("Mean PC", pc_num), ylim = range(c(y_mean - y_sd, y_mean + y_sd)), xaxt = "n")
+  arrows(x0 = atomic_number, y0 = y_mean - y_sd, x1 = atomic_number, y1 = y_mean + y_sd, code = 3, angle = 90, length = 0.05, col = "darkorange")
+  text(atomic_number, y_mean, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
+  axis(side = 1, at = atomic_number, labels = round(atomic_number, 3), las = 2, cex.axis = 0.7)
+  legend("bottomright", legend = c("Even", "Odd"), col = c("blue", "black"), pch = 16, title = "Atomic Num", cex = 0.7)
+  invisible(dev.off())
+
+  # Ionic Radius Plots
+  pdf(file.path(image_save_dir, paste0("ionic", pc_num, ".pdf")), width = 6, height = 4.5, pointsize = 11)
+  par(mar = c(5, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+  y_mean <- pc_mean[, pc_num]; y_sd <- pc_sd[, pc_num]
+  plot(ionic_radius8, y_mean, col = ifelse(atomic_number %% 2 == 0, "blue", "black"), pch = 16, main = paste("Ionic Radius (CN=8) vs PC", pc_num), xlab = "Ionic Radius (CN=8)", ylab = paste("Mean PC", pc_num), ylim = range(c(y_mean - y_sd, y_mean + y_sd)), xaxt = "n")
+  arrows(x0 = ionic_radius8, y0 = y_mean - y_sd, x1 = ionic_radius8, y1 = y_mean + y_sd, code = 3, angle = 90, length = 0.05, col = "darkorange")
+  text(ionic_radius8, y_mean, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
+  axis(side = 1, at = ionic_radius8, labels = round(ionic_radius8, 3), las = 2, cex.axis = 0.7)
+  legend("bottomright", legend = c("Even", "Odd"), col = c("blue", "black"), pch = 16, title = "Atomic Num", cex = 0.7)
+  invisible(dev.off())
+}
+ 
+#flipping 
+for (pc_no in 1:2)
+  {
+  pdf(file.path(image_save_dir, paste0("flip", pc_no, ".pdf")), width = 7, height = 7, pointsize = 11)
+  par(mfrow = c(2, 2), mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+  for (iteration in names(flipped_examples)) 
+  {
+    pc_val <- flipped_examples[[iteration]][, pc_no]
+    plot(atomic_number, pc_val, col = ifelse(atomic_number %% 2 == 0, "blue", "black"), 
+         pch = 16, main = paste("PC", pc_no, "Iteration", iteration), 
+         xlab = "Atomic Number", ylab = paste("Mean PC", pc_no))
+    text(atomic_number, pc_val, labels = element_symbol, pos = 4, col = "red", cex = 0.6)
+  }
+  invisible(dev.off())
+}
+
+
+#resi1
+pdf(file.path(image_save_dir, "resi1.pdf"), width = 6, height = 4.5, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+plot(as.matrix(ree_transformed), reconstructed_data, xlab = "True Values ", ylab = "Predicted Values", main = "Fit vs True Values", pch = 19, cex = 0.5, col = rgb(0, 0, 0, 0.2))
+abline(0, 1, col = "green", lwd = 2, lty = 2)
+invisible(dev.off())
+
+
+#rock scatters
+rm(plot_data_chur, sd_data_chur)
+plot_data_chur <- merge(rock_mean_chur, chosen_rocks, by = "Rock_Type")
+sd_data_chur <- merge(rock_sd_chur, chosen_rocks, by = "Rock_Type")
+
+chur_ref <- data.frame(Rock_Type="CHUR", Total_REE=0, Eu_Anomaly=0, Slope=0, Quad=0, Short_Name="CHUR")
+plot_data_chur <- rbind(plot_data_chur, chur_ref)
+sd_data_chur <- rbind(sd_data_chur, chur_ref)
+
+for(i in 1:length(axes_pair)) 
+{
+  pdf(file.path(image_save_dir, paste0("rock", i, ".pdf")), width = 6, height = 6, pointsize = 11)
+  par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+  
+  x_n <- axes_pair[[i]][1]; y_n <- axes_pair[[i]][2]
+  x_val <- plot_data_chur[[x_n]]; y_val <- plot_data_chur[[y_n]]
+  x_sd  <- sd_data_chur[[x_n]]; y_sd  <- sd_data_chur[[y_n]]
+  
+  is_chur <- plot_data_chur$Short_Name == "CHUR"
+  
+  x_limit <- range(c(x_val - x_sd, x_val + x_sd, 0), na.rm=T)
+  y_limit <- range(c(y_val - y_sd, y_val + y_sd, 0), na.rm=T)
+  
+
+  plot(x_val[!is_chur], y_val[!is_chur], xlab = paste(x_n, "(vs CHUR)"), ylab = paste(y_n, "(vs CHUR)"),
+       main = paste(x_n, "vs", y_n), pch = 19, cex = 0.6, xlim = x_limit, ylim = y_limit, asp=1)
+  
+  abline(h = 0, v = 0, lty = 3, col = "gray60")
+
+  suppressWarnings(arrows(x_val[!is_chur], y_val[!is_chur] - y_sd[!is_chur], x_val[!is_chur], y_val[!is_chur] + y_sd[!is_chur], length = 0.04, angle = 90, code = 3, col = "gray70"))
+  suppressWarnings(arrows(x_val[!is_chur] - x_sd[!is_chur], y_val[!is_chur], x_val[!is_chur] + x_sd[!is_chur], y_val[!is_chur], length = 0.04, angle = 90, code = 3, col = "gray70"))
+  
+
+  text(x_val[!is_chur], y_val[!is_chur], labels = plot_data_chur$Short_Name[!is_chur], pos = 3, offset = 0.2, cex = 0.6, col = "red")
+  
+  points(0, 0, col = "blue", pch = 18, cex = 1.5)
+  text(0, 0, labels = "CHUR", pos = 4, offset = 0.4, cex = 0.8, col = "blue", font = 2)
+
+  invisible(dev.off())
+}
+
+
+#resi2
+pdf(file.path(image_save_dir, "resi2.pdf"), width = 6, height = 4.5, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+plot(as.matrix(ree_minus_chur), reconstructed_data_chur, xlab = "True Values ", ylab = "Predicted Values ", main = "Fit vs True Values", pch = 19, cex = 0.5, col = rgb(0, 0, 0, 0.2))
+abline(0, 1, col = "green", lwd = 2, lty = 2)
+invisible(dev.off())
+
+#residualbiplot
+pdf(file.path(image_save_dir, "Residual_biplot.pdf"), width = 6, height = 6, pointsize = 11)
+par(mar = c(4, 4, 2, 1), mgp = c(2.5, 0.7, 0))
+biplot(pca_chur_residual, xlabs = rep(".", nrow(pca_chur_residual$x)), main = "")
+invisible(dev.off())
+
+#element_barplots
+
+pdf(file.path(image_save_dir, "element_barplots.pdf"), width = 8, height = 8, pointsize = 10)
+par(mfrow = c(4, 4), mar = c(3, 3, 2, 1), mgp = c(1.5, 0.5, 0))
+invisible(sapply(1:14, function(i) {
+  hist(chur_residual_matrix[, i], 
+       main = colnames(chur_residual_matrix)[i], 
+       col = "blue", 
+       breaks = 30, 
+       xlab = "Residual")
+}))
+invisible(dev.off())
+
+# resi scatters
+
+# Plot for Atomic Number
+pdf(file.path(image_save_dir, "resi_atomic.pdf"), width = 6, height = 5, pointsize = 11)
+par(mar = c(6, 4, 4, 2), mgp = c(2.5, 0.7, 0))
+plot(atomic_number, pca_chur_residual$rotation[,1], col = point_col, pch = 16, 
+     xlab = "Atomic Number", ylab = "Residual PC1 Loadings",
+     main = "Residual PC1 vs Atomic Number", xaxt = "n")
+text(atomic_number, pca_chur_residual$rotation[,1], labels = element_symbol, pos = 4, col = "red", cex = 0.7)
+axis(side = 1, at = atomic_number, labels = round(atomic_number, 3), las = 2, cex.axis = 0.7)
+abline(h = 0, lty = 2, col = "gray60")
+legend("bottomright", legend = c("Even", "Odd"), col = c("blue", "black"), pch = 16, cex = 0.6)
+invisible(dev.off())
+
+# Plot for Ionic Radius (CN=8)
+pdf(file.path(image_save_dir, "resi_ionic.pdf"), width = 6, height = 5, pointsize = 11)
+par(mar = c(6, 4, 4, 2), mgp = c(2.5, 0.7, 0))
+plot(ionic_radius8, pca_chur_residual$rotation[,1], col = point_col, pch = 16, 
+     xlab = "Ionic Radius (CN=8)", ylab = "Residual PC1 Loadings",
+     main = "Residual PC1 vs Ionic Radius (CN=8)", xaxt = "n")
+text(ionic_radius8, pca_chur_residual$rotation[,1], labels = element_symbol, pos = 4, col = "red", cex = 0.7)
+axis(side = 1, at = ionic_radius8, labels = round(ionic_radius8, 3), las = 2, cex.axis = 0.7)
+abline(h = 0, lty = 2, col = "gray60")
+legend("bottomright", legend = c("Even", "Odd"), col = c("blue", "black"), pch = 16, cex = 0.6)
+invisible(dev.off())
+
+
+
+```
 
